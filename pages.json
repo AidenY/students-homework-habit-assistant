@@ -1,0 +1,41 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "作业习惯小助手"
+			}
+		},
+		{
+			"path": "pages/session/start",
+			"style": {
+				"navigationBarTitleText": "开始作业准备"
+			}
+		},
+		{
+			"path": "pages/session/doing",
+			"style": {
+				"navigationBarTitleText": "专心写作业"
+			}
+		},
+		{
+			"path": "pages/session/report",
+			"style": {
+				"navigationBarTitleText": "本次作业报告"
+			}
+		},
+		{
+			"path": "pages/history/list",
+			"style": {
+				"navigationBarTitleText": "历史记录"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "作业习惯小助手",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}

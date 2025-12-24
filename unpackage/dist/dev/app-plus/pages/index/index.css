@@ -1,0 +1,108 @@
+
+.home-page {
+  min-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #e6f3ff, #ffffff);
+  max-width: 23.4375rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.title-wrap {
+  flex: 1;
+  padding-right: 0.75rem;
+}
+.app-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2c405a;
+}
+.app-subtitle {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: #555555;
+}
+.header-logo {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+}
+.content-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+}
+.start-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+.start-icon-wrapper {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 3.75rem;
+  background: linear-gradient(135deg, #4ba3ff, #73d5ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.375rem 1.25rem rgba(75, 163, 255, 0.3);
+  margin-bottom: 1rem;
+}
+.start-icon {
+  font-size: 3.125rem;
+  color: #ffffff;
+  font-weight: 300;
+}
+.start-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2c405a;
+}
+.start-button-hover {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+.bottom-area {
+  flex-shrink: 0;
+  padding-bottom: 1rem;
+}
+.history-button {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: transform 0.12s ease-out, box-shadow 0.18s ease-out,
+    background-color 0.18s ease-out;
+}
+.history-icon {
+  font-size: 1.125rem;
+  color: #2f80ff;
+  font-weight: 500;
+}
+.history-text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #2c405a;
+}
+.history-button-hover {
+  transform: scale(0.97);
+  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.12);
+  opacity: 0.96;
+}

@@ -1,0 +1,223 @@
+
+.page {
+  min-height: 100vh;
+  padding: 1rem 1rem 5rem;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #e6f3ff, #ffffff);
+  max-width: 23.4375rem;
+  margin: 0 auto;
+}
+.score-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.score-circle {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 2.5rem;
+  background: linear-gradient(135deg, #4ba3ff, #2f80ff);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  box-shadow: 0 0.3125rem 0.875rem rgba(47, 128, 255, 0.4);
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+.score-value {
+  font-size: 1.6875rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+.score-text {
+  flex: 1;
+  margin-left: 0.75rem;
+}
+.score-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #2c405a;
+  margin-bottom: 0.25rem;
+}
+.score-subtitle {
+  font-size: 0.8125rem;
+  color: #555555;
+}
+.card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.04);
+  transition: transform 0.16s ease-out, box-shadow 0.2s ease-out;
+}
+.sub-score-card {
+  display: flex;
+  justify-content: space-between;
+}
+.sub-score-item {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+.sub-score-item:last-child {
+  margin-right: 0;
+}
+.sub-score-label {
+  font-size: 0.75rem;
+  color: #555555;
+}
+.sub-score-value {
+  display: block;
+  margin-top: 0.1875rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #2c405a;
+}
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3125rem;
+}
+.stats-item {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+.stats-item:last-child {
+  margin-right: 0;
+}
+.stats-label {
+  font-size: 0.75rem;
+  color: #555555;
+}
+.stats-value {
+  display: block;
+  margin-top: 0.1875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2c405a;
+}
+.summary-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2c405a;
+  margin-bottom: 0.375rem;
+}
+.summary-text {
+  font-size: 0.8125rem;
+  color: #3f536e;
+  line-height: 1.6;
+}
+.bottom-area {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1.25rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+}
+.primary-btn,
+.secondary-btn {
+  flex: 1;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+}
+.primary-btn {
+  margin-left: 0.5rem;
+  background: linear-gradient(135deg, #4ba3ff, #2f80ff);
+  color: #ffffff;
+  box-shadow: 0 0.25rem 0.625rem rgba(47, 128, 255, 0.4);
+  transition: transform 0.12s ease-out, box-shadow 0.18s ease-out,
+    opacity 0.12s ease-out;
+}
+.secondary-btn {
+  margin-right: 0.5rem;
+  background-color: #ffffff;
+  color: #2f80ff;
+  border: 0.0625rem solid #a8c9ff;
+  transition: transform 0.12s ease-out, opacity 0.12s ease-out,
+    border-color 0.18s ease-out;
+}
+.primary-btn-hover {
+  transform: scale(0.97);
+  box-shadow: 0 0.1875rem 0.5rem rgba(47, 128, 255, 0.4);
+  opacity: 0.95;
+}
+.secondary-btn-hover {
+  transform: scale(0.97);
+  opacity: 0.95;
+  border-color: #4ba3ff;
+}
+
+/* 照片回看样式 */
+.photos-card {
+  padding: 0.75rem;
+}
+.photos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.625rem;
+}
+.photos-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2c405a;
+}
+.photos-count {
+  font-size: 0.75rem;
+  color: #999999;
+}
+.photos-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+.photos-list {
+  display: flex;
+  flex-direction: row;
+}
+.photo-item {
+  position: relative;
+  margin-right: 0.5rem;
+  width: 6.25rem;
+  height: 6.25rem;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  flex-shrink: 0;
+}
+.photo-item:last-child {
+  margin-right: 0;
+}
+.photo-thumb {
+  width: 100%;
+  height: 100%;
+}
+.photo-badge {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  background-color: rgba(47, 128, 255, 0.9);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+.photo-badge-text {
+  font-size: 0.5625rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+.photo-time {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+  padding: 0.25rem;
+}
+.photo-time-text {
+  font-size: 0.625rem;
+  color: #ffffff;
+  font-weight: 500;
+}

@@ -1,0 +1,106 @@
+
+.page {
+  min-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #e6f3ff, #ffffff);
+  max-width: 23.4375rem;
+  margin: 0 auto;
+}
+.hero {
+  display: flex;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.hero-image {
+  width: 4.375rem;
+  height: 4.375rem;
+  margin-right: 0.75rem;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+}
+.hero-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2c405a;
+  margin-bottom: 0.25rem;
+}
+.hero-subtitle {
+  font-size: 0.8125rem;
+  color: #555555;
+}
+.card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.04);
+}
+.card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #2c405a;
+  margin-bottom: 0.5rem;
+}
+.duration-options {
+  display: flex;
+  justify-content: space-between;
+}
+.duration-item {
+  flex: 1;
+  margin-right: 0.5rem;
+  padding: 0.625rem 0;
+  border-radius: 0.625rem;
+  background-color: #f5f7fb;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  transition: transform 0.12s ease-out, background-color 0.18s ease-out;
+}
+.duration-item:last-child {
+  margin-right: 0;
+}
+.duration-item.active {
+  background: linear-gradient(135deg, #4ba3ff, #73d5ff);
+}
+.duration-item.active .duration-value {
+  color: #ffffff;
+}
+.duration-value {
+  font-size: 0.9375rem;
+  color: #2c405a;
+}
+.tips-card .tips-text {
+  font-size: 0.8125rem;
+  color: #3f536e;
+  line-height: 1.5;
+}
+.bottom-area {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1.25rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+.primary-btn {
+  height: 2.75rem;
+  line-height: 2.75rem;
+  border-radius: 1.375rem;
+  background: linear-gradient(135deg, #4ba3ff, #2f80ff);
+  box-shadow: 0 0.3125rem 0.75rem rgba(47, 128, 255, 0.4);
+  font-size: 1rem;
+  transition: transform 0.12s ease-out, box-shadow 0.18s ease-out,
+    opacity 0.12s ease-out;
+}
+.primary-btn-hover {
+  transform: scale(0.97);
+  box-shadow: 0 0.1875rem 0.5rem rgba(47, 128, 255, 0.4);
+  opacity: 0.95;
+}

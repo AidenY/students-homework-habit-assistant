@@ -1,0 +1,1152 @@
+<template>
+  <view class="page doing-page">
+    <view class="top-card">
+      <view class="time-row">
+        <view class="time-block">
+          <text class="time-label">已用时间</text>
+          <text class="time-value">{{ elapsedText }}</text>
+        </view>
+        <view class="time-block">
+          <text class="time-label">预计</text>
+          <text class="time-value">{{ expectedText }}</text>
+        </view>
+      </view>
+      <view class="progress-bar">
+        <view class="progress-inner" :style="{ width: progressPercent + '%' }"></view>
+      </view>
+    </view>
+
+    <view class="camera-card">
+      <!-- 使用 live-pusher 组件实现摄像头预览 -->
+      <view class="camera-view-wrapper">
+        <live-pusher
+          id="livePusher"
+          class="camera-view"
+          url=""
+          mode="SD"
+          :autopush="false"
+          :enable-camera="true"
+          :device-position="devicePosition"
+          :beauty="0"
+          :whiteness="0"
+          :aspect="aspect"
+          :min-bitrate="200"
+          :max-bitrate="1000"
+          :waiting="false"
+          :enable-mic="false"
+          :muted="true"
+          @statechange="onPusherStateChange"
+          @netstatus="onPusherNetStatus"
+          @error="onPusherError"
+        ></live-pusher>
+        <!-- 占位：只在未启动时显示 -->
+        <view v-if="!pusherReady" class="camera-placeholder">
+          <text class="placeholder-text">摄像头预览区域</text>
+          <text class="placeholder-subtitle">{{ permissionGranted ? '正在启动摄像头...' : '权限授予后将显示实时画面' }}</text>
+        </view>
+      </view>
+      <view class="camera-overlay">
+        <text class="camera-title">实时摄像头预览</text>
+        <text class="camera-subtitle">
+          当前使用：{{ devicePosition === 'front' ? '前置摄像头' : '后置摄像头' }}
+        </text>
+        <view class="switch-row">
+          <text class="camera-tip">保持脸部出现在画面中间，更容易识别姿态～</text>
+          <view class="switch-btn" @click="switchCamera">
+            <text class="switch-text">
+              切换为{{ devicePosition === 'front' ? '后置' : '前置' }}摄像头
+            </text>
+          </view>
+        </view>
+      </view>
+      <!-- 调试信息面板 -->
+      <view v-if="showDebugInfo" class="debug-panel">
+        <text class="debug-title">调试信息</text>
+        <text class="debug-item">权限状态: {{ permissionStatus }}</text>
+        <text class="debug-item">摄像头状态: {{ cameraStatus }}</text>
+        <text v-if="cameraError" class="debug-item debug-error">错误信息: {{ cameraError }}</text>
+        <text v-if="cameraErrorDetail" class="debug-item debug-error">错误详情: {{ cameraErrorDetail }}</text>
+        <view class="debug-btn-row">
+          <view class="debug-btn" @click="toggleDebugInfo">
+            <text class="debug-btn-text">隐藏调试</text>
+          </view>
+          <view class="debug-btn" @click="checkCameraStatus">
+            <text class="debug-btn-text">检查状态</text>
+          </view>
+        </view>
+      </view>
+      <view v-else class="debug-toggle">
+        <view class="debug-toggle-btn" @click="toggleDebugInfo">
+          <text class="debug-toggle-text">显示调试信息</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="status-row">
+      <view class="status-card" :class="'status-' + postureState">
+        <text class="status-label">坐姿</text>
+        <text class="status-value">{{ postureLabel }}</text>
+      </view>
+      <view class="status-card" :class="'status-' + focusState">
+        <text class="status-label">专注</text>
+        <text class="status-value">{{ focusLabel }}</text>
+      </view>
+      <view class="status-card" :class="'status-' + taskState">
+        <text class="status-label">状态</text>
+        <text class="status-value">{{ taskLabel }}</text>
+      </view>
+    </view>
+
+    <view v-if="encourageText" class="encourage">
+      <text class="encourage-text">{{ encourageText }}</text>
+    </view>
+
+    <view class="reminder-card">
+      <view class="reminder-header">
+        <text class="reminder-title">最近提醒</text>
+        <text class="reminder-count">共 {{ reminderCount }} 次</text>
+      </view>
+      <view v-if="lastReminderText" class="reminder-content" @click="replayLastReminder">
+        <text class="reminder-icon">🔔</text>
+        <text class="reminder-text">{{ lastReminderText }}</text>
+      </view>
+      <view v-else class="reminder-empty">
+        <text class="reminder-text">当前表现不错，继续保持～</text>
+      </view>
+    </view>
+
+    <view class="bottom-area">
+      <view class="danger-btn" @click="endSession">
+        <text class="danger-text">结束作业</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import { startMockLoop, stopMockLoop } from '@/common/detectionService.js'
+import { formatDuration } from '@/common/timeUtils.js'
+import { playReminder } from '@/common/voiceReminder.js'
+import { savePhoto } from '@/common/photoStorage.js'
+
+export default {
+  data() {
+    return {
+      startTime: 0,
+      expectedDuration: 0,
+      now: Date.now(),
+      timer: null,
+      snapshots: [],
+      reminders: [],
+      lastReminderText: '',
+      reminderCount: 0,
+      postureState: 'good',
+      focusState: 'focus',
+      taskState: 'writing',
+      badStreak: 0,
+      devicePosition: 'front',
+      showDebugInfo: false,
+      permissionStatus: '未知',
+      cameraStatus: '未知',
+      cameraError: '',
+      cameraErrorDetail: '',
+      pusherReady: false,
+      pusherContext: null,
+      permissionGranted: false,
+      aspect: '9:16', // 竖屏比例
+      photoTimer: null, // 拍照定时器
+      photos: [] // 保存的照片列表
+    }
+  },
+  computed: {
+    elapsedText() {
+      return formatDuration(this.now - this.startTime)
+    },
+    expectedText() {
+      return formatDuration(this.expectedDuration)
+    },
+    progressPercent() {
+      if (!this.expectedDuration) return 0
+      const ratio = (this.now - this.startTime) / this.expectedDuration
+      let p = Math.floor(ratio * 100)
+      if (p < 0) p = 0
+      if (p > 100) p = 100
+      return p
+    },
+    postureLabel() {
+      const map = {
+        good: '坐姿端正',
+        bend: '有点趴桌',
+        lie: '几乎趴下了',
+        leave: '离开座位'
+      }
+      return map[this.postureState] || '坐姿端正'
+    },
+    focusLabel() {
+      const map = {
+        focus: '很专心',
+        distract: '有点走神'
+      }
+      return map[this.focusState] || '很专心'
+    },
+    taskLabel() {
+      const map = {
+        writing: '正在书写',
+        thinking: '在思考',
+        idle: '在发呆'
+      }
+      return map[this.taskState] || '正在书写'
+    },
+    encourageText() {
+      if (this.postureState === 'good' && this.focusState === 'focus') {
+        return '现在的状态很棒，继续保持哦！'
+      }
+      return ''
+    }
+  },
+  created() {
+    // nvue 中使用 created 获取参数
+    const query = this.$route && this.$route.query ? this.$route.query : {}
+    this.startTime = Number(query.startTime) || Date.now()
+    this.expectedDuration = Number(query.expectedDuration) || 30 * 60 * 1000
+    // 生成会话ID（使用 startTime 作为唯一标识）
+    this.sessionId = String(this.startTime)
+    console.log('created: 初始化 sessionId', this.sessionId, 'startTime', this.startTime)
+  },
+  mounted() {
+    // nvue 中 mounted 生命周期
+    console.log('doing page mounted')
+    // 延迟初始化 live-pusher，确保组件已完全渲染
+    setTimeout(() => {
+      this.initLivePusher()
+    }, 100)
+  },
+  onShow() {
+    // 确保 startTime 和 sessionId 都已设置
+    if (!this.startTime || this.startTime === 0) {
+      this.startTime = Date.now()
+    }
+    // 确保 sessionId 已设置（如果还没有）
+    if (!this.sessionId || this.sessionId === '' || this.sessionId === '0') {
+      this.sessionId = String(this.startTime)
+      console.log('onShow: 初始化 sessionId', this.sessionId)
+    }
+    
+    this.startTimers()
+    this.startDetection()
+    
+    // 确保 live-pusher context 已创建
+    if (!this.pusherContext) {
+      this.initLivePusher()
+    }
+    
+    // 请求权限
+    this.requestCameraPermission()
+  },
+  onHide() {
+    this.clearTimers()
+    stopMockLoop()
+    this.stopLivePusher()
+  },
+  beforeDestroy() {
+    this.clearTimers()
+    stopMockLoop()
+    this.stopLivePusher()
+  },
+  methods: {
+    startTimers() {
+      this.now = Date.now()
+      this.timer = setInterval(() => {
+        this.now = Date.now()
+      }, 1000)
+    },
+    clearTimers() {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+      if (this.photoTimer) {
+        clearInterval(this.photoTimer)
+        this.photoTimer = null
+      }
+    },
+    startDetection() {
+      startMockLoop({
+        intervalMs: 3000,
+        onResult: snapshot => {
+          this.snapshots.push(snapshot)
+          this.postureState = snapshot.postureState
+          this.focusState = snapshot.focusState
+          this.taskState = snapshot.taskState
+
+          const isBad =
+            snapshot.postureState !== 'good' ||
+            snapshot.focusState !== 'focus'
+          if (isBad) {
+            this.badStreak += 1
+          } else {
+            this.badStreak = 0
+          }
+
+          if (this.badStreak >= 2) {
+            this.triggerReminder(snapshot)
+            this.badStreak = 0
+          }
+        }
+      })
+      
+      // 启动定时拍照（每30秒）
+      this.startPhotoCapture()
+    },
+    
+    /**
+     * 启动定时拍照
+     */
+    startPhotoCapture() {
+      // 立即拍第一张
+      this.capturePhoto()
+      
+      // 每30秒拍一张
+      this.photoTimer = setInterval(() => {
+        this.capturePhoto()
+      }, 1000) // 1秒 = 1000毫秒
+    },
+    
+    /**
+     * 拍照
+     */
+    capturePhoto() {
+      if (!this.pusherContext || !this.pusherReady) {
+        console.log('摄像头未准备好，无法拍照')
+        return
+      }
+      
+      try {
+        // 使用 live-pusher 的 snapshot 方法拍照
+        this.pusherContext.snapshot({
+          quality: 'high', // 高质量
+          success: async (res) => {
+            // 检查返回的数据结构
+            // live-pusher 的 snapshot 返回格式可能是 { message: { tempImagePath, height, width } }
+            console.log('snapshot 返回数据', res)
+            
+            let photoPath = null
+            if (res.message && res.message.tempImagePath) {
+              // 标准格式：{ message: { tempImagePath: "..." } }
+              photoPath = res.message.tempImagePath
+            } else if (res.tempImagePath) {
+              // 直接格式：{ tempImagePath: "..." }
+              photoPath = res.tempImagePath
+            } else if (res.tempFilePath) {
+              photoPath = res.tempFilePath
+            } else if (res.path) {
+              photoPath = res.path
+            } else if (res.filePath) {
+              photoPath = res.filePath
+            }
+            
+            if (!photoPath) {
+              console.error('拍照失败：未获取到照片路径', res)
+              uni.showToast({
+                title: '拍照失败：未获取到照片路径',
+                icon: 'none',
+                duration: 2000
+              })
+              return
+            }
+            
+            console.log('获取到照片路径', photoPath)
+            
+            const timestamp = Date.now()
+            const elapsedTime = timestamp - this.startTime
+            const elapsedText = this.formatElapsedTime(elapsedTime)
+            
+            // 保存照片信息到内存（用于传递到报告页）
+            const photoInfo = {
+              path: photoPath,
+              timestamp: timestamp,
+              elapsedTime: elapsedTime,
+              elapsedText: elapsedText
+            }
+            
+            this.photos.push(photoInfo)
+            console.log('拍照成功', photoInfo)
+            
+            // 保存到 SQLite 数据库
+            try {
+              // 确保 sessionId 存在
+              if (!this.sessionId || this.sessionId === '' || this.sessionId === '0') {
+                this.sessionId = String(this.startTime)
+                console.warn('capturePhoto: sessionId 为空，重新初始化', this.sessionId)
+              }
+              
+              console.log('准备保存照片，sessionId:', this.sessionId, 'photoPath:', photoPath.substring(0, 50))
+              
+              await savePhoto(
+                this.sessionId,
+                photoPath,
+                timestamp,
+                elapsedTime,
+                elapsedText
+              )
+              console.log('照片已保存到数据库')
+            } catch (dbErr) {
+              console.error('保存照片到数据库失败', dbErr)
+              console.error('失败时的 sessionId:', this.sessionId, '类型:', typeof this.sessionId)
+              // 即使数据库保存失败，也继续使用内存中的照片
+            }
+            
+            // 可选：显示拍照提示
+            uni.showToast({
+              title: `已保存照片 (${this.photos.length}张)`,
+              icon: 'none',
+              duration: 1000
+            })
+          },
+          fail: (err) => {
+            console.error('拍照失败', err)
+          }
+        })
+      } catch (e) {
+        console.error('拍照异常', e)
+      }
+    },
+    
+    /**
+     * 格式化已用时间文本
+     */
+    formatElapsedTime(ms) {
+      const totalSeconds = Math.floor(ms / 1000)
+      const minutes = Math.floor(totalSeconds / 60)
+      const seconds = totalSeconds % 60
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    },
+    async triggerReminder(snapshot) {
+      const type =
+        snapshot.postureState !== 'good'
+          ? 'posture'
+          : 'focus'
+      const text = await playReminder(type)
+      this.lastReminderText = text
+      this.reminderCount += 1
+      this.reminders.push({
+        timestamp: Date.now(),
+        type,
+        text
+      })
+    },
+    async replayLastReminder() {
+      if (!this.lastReminderText) return
+      await playReminder('repeat', this.lastReminderText)
+    },
+    switchCamera() {
+      // 切换摄像头
+      this.devicePosition = this.devicePosition === 'front' ? 'back' : 'front'
+      this.cameraStatus = `正在切换到${this.devicePosition === 'front' ? '前置' : '后置'}摄像头...`
+      
+      // live-pusher 会自动响应 device-position 的变化
+      if (this.pusherContext) {
+        // 可以调用 switchCamera 方法（如果支持）
+        try {
+          this.pusherContext.switchCamera({
+            success: () => {
+              console.log('摄像头切换成功')
+            },
+            fail: (err) => {
+              console.log('摄像头切换失败', err)
+            }
+          })
+        } catch (e) {
+          console.log('switchCamera 方法可能不支持，使用 device-position 属性切换')
+        }
+      }
+    },
+    endSession() {
+      const endTime = Date.now()
+      stopMockLoop()
+      this.clearTimers()
+
+      const payload = {
+        startTime: this.startTime,
+        endTime,
+        expectedDuration: this.expectedDuration,
+        snapshots: this.snapshots,
+        reminders: this.reminders,
+        photos: this.photos // 传递照片列表
+      }
+
+      uni.navigateTo({
+        url: `/pages/session/report?sessionId=${this.sessionId}`,
+        success: res => {
+          res.eventChannel && res.eventChannel.emit('sessionFinished', payload)
+        }
+      })
+    },
+    /**
+     * 初始化 live-pusher
+     */
+    initLivePusher() {
+      // 创建 live-pusher 上下文
+      // 注意：在 nvue 中，需要确保组件已渲染后才能创建 context
+      this.$nextTick(() => {
+        try {
+          this.pusherContext = uni.createLivePusherContext('livePusher', this)
+          console.log('live-pusher context created', this.pusherContext)
+        } catch (e) {
+          console.error('创建 live-pusher context 失败', e)
+          // 延迟重试
+          setTimeout(() => {
+            try {
+              this.pusherContext = uni.createLivePusherContext('livePusher', this)
+              console.log('live-pusher context 重试成功', this.pusherContext)
+            } catch (e2) {
+              console.error('live-pusher context 重试也失败', e2)
+            }
+          }, 500)
+        }
+      })
+    },
+
+    /**
+     * 启动 live-pusher 预览
+     */
+    startLivePusher() {
+      if (!this.pusherContext) {
+        this.initLivePusher()
+      }
+      
+      if (!this.permissionGranted) {
+        console.log('权限未授予，等待权限授予后再启动')
+        return
+      }
+
+      if (!this.pusherContext) {
+        console.log('pusherContext 不存在，重新初始化')
+        this.initLivePusher()
+        // 等待 context 创建
+        setTimeout(() => {
+          this._doStartLivePusher()
+        }, 300)
+        return
+      }
+
+      this._doStartLivePusher()
+    },
+
+    /**
+     * 实际执行启动 live-pusher 的方法
+     */
+    _doStartLivePusher() {
+      if (!this.pusherContext) {
+        console.error('pusherContext 仍然不存在')
+        return
+      }
+
+      // 先尝试使用 startPreview 方法（推荐用于预览）
+      if (typeof this.pusherContext.startPreview === 'function') {
+        this.pusherContext.startPreview({
+          success: () => {
+            this.pusherReady = true
+            this.cameraStatus = '摄像头预览已启动 ✓'
+            console.log('live-pusher 预览启动成功')
+          },
+          fail: (err) => {
+            console.error('live-pusher startPreview 失败', err)
+            // 降级到 start 方法
+            this._tryStartMethod()
+          }
+        })
+      } else {
+        // 如果 startPreview 不存在，直接使用 start
+        this._tryStartMethod()
+      }
+    },
+
+    /**
+     * 尝试使用 start 方法
+     */
+    _tryStartMethod() {
+      if (!this.pusherContext) return
+
+      this.pusherContext.start({
+        success: () => {
+          this.pusherReady = true
+          this.cameraStatus = '摄像头预览已启动 ✓'
+          console.log('live-pusher start 方法成功')
+        },
+        fail: (err) => {
+          this.cameraStatus = '启动失败: ' + JSON.stringify(err)
+          this.cameraError = JSON.stringify(err)
+          console.error('live-pusher start 方法失败', err)
+          
+          // 尝试更详细的错误信息
+          const errorMsg = err.errMsg || err.message || JSON.stringify(err)
+          console.error('详细错误信息:', errorMsg)
+          
+          if (!this.showDebugInfo) {
+            this.showDebugInfo = true
+          }
+          
+          uni.showToast({
+            title: '摄像头启动失败，请查看调试信息',
+            icon: 'none',
+            duration: 3000
+          })
+        }
+      })
+    },
+
+    /**
+     * 停止 live-pusher 预览
+     */
+    stopLivePusher() {
+      if (this.pusherContext) {
+        // 先尝试 stopPreview
+        this.pusherContext.stopPreview({
+          success: () => {
+            this.pusherReady = false
+            console.log('live-pusher 预览已停止')
+          },
+          fail: () => {
+            // 如果 stopPreview 失败，尝试 stop
+            this.pusherContext.stop({
+              success: () => {
+                this.pusherReady = false
+                console.log('live-pusher 已停止')
+              },
+              fail: (err) => {
+                console.log('live-pusher 停止失败', err)
+              }
+            })
+          }
+        })
+      }
+    },
+
+    /**
+     * 请求摄像头权限
+     */
+    requestCameraPermission() {
+      // App 环境：使用 plus.android.requestPermissions
+      // #ifdef APP-PLUS
+      try {
+        this.permissionStatus = '请求中...'
+        
+        plus.android.requestPermissions(
+          ['android.permission.CAMERA'],
+          (resultObj) => {
+            const granted = resultObj.granted && resultObj.granted.length > 0
+            if (granted) {
+              this.permissionStatus = '已授予'
+              this.permissionGranted = true
+              console.log('摄像头权限已授予', resultObj)
+              
+              // 权限授予后，启动 live-pusher
+              setTimeout(() => {
+                this.startLivePusher()
+              }, 300)
+            } else {
+              this.permissionStatus = '被拒绝'
+              this.permissionGranted = false
+              console.log('摄像头权限被拒绝', resultObj)
+            }
+          },
+          err => {
+            this.permissionStatus = '请求失败: ' + JSON.stringify(err)
+            this.permissionGranted = false
+            console.log('摄像头权限请求失败: ' + JSON.stringify(err))
+            uni.showToast({
+              title: '未授予摄像头权限，无法预览画面',
+              icon: 'none',
+              duration: 3000
+            })
+          }
+        )
+      } catch (e) {
+        this.permissionStatus = '异常: ' + e.toString()
+        this.permissionGranted = false
+        console.log('摄像头权限请求异常: ' + e)
+      }
+      // #endif
+      
+      // H5 环境：live-pusher 会自动请求权限
+      // #ifdef H5
+      this.permissionGranted = true
+      this.permissionStatus = 'H5 环境，live-pusher 自动请求权限'
+      setTimeout(() => {
+        this.startLivePusher()
+      }, 500)
+      // #endif
+    },
+    /**
+     * live-pusher 状态变化事件
+     */
+    onPusherStateChange(e) {
+      console.log('live-pusher state change', e)
+      const code = e.detail.code
+      
+      switch (code) {
+        case 1001: // 已经连接推流服务器
+          this.cameraStatus = '已连接推流服务器'
+          break
+        case 1002: // 已经连接推流服务器，开始推流
+          this.pusherReady = true
+          this.cameraStatus = '摄像头预览已启动 ✓'
+          break
+        case 1003: // 网络接收到首个视频数据包
+          this.pusherReady = true
+          this.cameraStatus = '摄像头画面已显示 ✓'
+          break
+        case 1004: // 视频播放开始
+          this.pusherReady = true
+          this.cameraStatus = '摄像头画面已显示 ✓'
+          break
+        case 1005: // 视频播放进度
+          // 正常播放中
+          break
+        case 1006: // 视频播放结束
+          this.cameraStatus = '视频播放结束'
+          break
+        case 1007: // 视频播放Loading
+          this.cameraStatus = '视频加载中...'
+          break
+        case 1008: // 解码器启动
+          this.cameraStatus = '解码器启动'
+          break
+        case -1301: // 打开摄像头失败
+          this.cameraError = '打开摄像头失败'
+          this.cameraStatus = '打开摄像头失败'
+          if (!this.showDebugInfo) {
+            this.showDebugInfo = true
+          }
+          break
+        case -1302: // 打开麦克风失败
+          this.cameraError = '打开麦克风失败'
+          break
+        case -1303: // 视频编码失败
+          this.cameraError = '视频编码失败'
+          break
+        case -1304: // 音频编码失败
+          this.cameraError = '音频编码失败'
+          break
+        case -1305: // 不支持的视频分辨率
+          this.cameraError = '不支持的视频分辨率'
+          break
+        case -1306: // 不支持的音频采样率
+          this.cameraError = '不支持的音频采样率'
+          break
+        case -1307: // 网络断连，且经多次重连抢救无效，更多重试请重启推流
+          this.cameraError = '网络断连'
+          this.cameraStatus = '网络断连'
+          break
+        case -1308: // 开始录屏失败
+          this.cameraError = '开始录屏失败'
+          break
+        case -1309: // 录屏失败
+          this.cameraError = '录屏失败'
+          break
+        default:
+          console.log('未知状态码:', code)
+      }
+    },
+
+    /**
+     * live-pusher 网络状态事件
+     */
+    onPusherNetStatus(e) {
+      // 可以在这里处理网络状态，用于优化
+      // console.log('live-pusher net status', e)
+    },
+
+    /**
+     * live-pusher 错误事件
+     */
+    onPusherError(e) {
+      console.error('live-pusher error', e)
+      this.cameraError = 'live-pusher 错误: ' + JSON.stringify(e.detail)
+      this.cameraStatus = '摄像头错误'
+      
+      if (!this.showDebugInfo) {
+        this.showDebugInfo = true
+      }
+      
+      uni.showToast({
+        title: '摄像头错误，请查看调试信息',
+        icon: 'none',
+        duration: 3000
+      })
+    },
+    toggleDebugInfo() {
+      this.showDebugInfo = !this.showDebugInfo
+    },
+    
+    /**
+     * 检查摄像头状态
+     */
+    checkCameraStatus() {
+      // #ifdef APP-PLUS
+      try {
+        const main = plus.android.runtimeMainActivity()
+        const pm = plus.android.invoke(main, 'getPackageManager')
+        const hasCamera = plus.android.invoke(pm, 'hasSystemFeature', 'android.hardware.camera')
+        
+        // 检查摄像头数量
+        const Camera = plus.android.importClass('android.hardware.Camera')
+        const cameraCount = Camera.getNumberOfCameras()
+        
+        // 检查权限状态
+        const PackageManager = plus.android.importClass('android.content.pm.PackageManager')
+        const permission = 'android.permission.CAMERA'
+        const result = plus.android.invoke(main, 'checkSelfPermission', permission)
+        const granted = result === PackageManager.PERMISSION_GRANTED
+        
+        this.permissionStatus = `权限检查: ${granted ? '已授予' : '未授予'}`
+        
+        // 更新摄像头状态
+        if (this.pusherReady) {
+          this.cameraStatus = `live-pusher 已启动 (设备支持: ${hasCamera ? '是' : '否'}, 数量: ${cameraCount})`
+        } else {
+          this.cameraStatus = `等待 live-pusher 启动... (设备支持: ${hasCamera ? '是' : '否'}, 数量: ${cameraCount}, 权限: ${granted ? '已授予' : '未授予'})`
+        }
+      } catch (e) {
+        this.cameraStatus = '检查失败: ' + e.toString()
+        console.log('检查摄像头状态失败', e)
+      }
+      // #endif
+    }
+  }
+}
+</script>
+
+<style>
+.page {
+  flex: 1;
+  background-color: #f3f7ff;
+  padding-left: 16rpx;
+  padding-right: 16rpx;
+  padding-top: 16rpx;
+  padding-bottom: 140rpx;
+}
+
+.top-card {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.time-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.time-block {
+  flex: 1;
+}
+
+.time-label {
+  font-size: 24rpx;
+  color: #555555;
+}
+
+.time-value {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #2c405a;
+  margin-top: 4rpx;
+}
+
+.progress-bar {
+  height: 14rpx;
+  border-radius: 7rpx;
+  background-color: #f0f3fa;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 14rpx;
+  border-radius: 7rpx;
+  background-color: #4ba3ff;
+}
+
+.camera-card {
+  margin-top: 12rpx;
+  margin-bottom: 16rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.camera-view-wrapper {
+  width: 750rpx;
+  height: 520rpx;
+  position: relative;
+  background-color: #000000;
+  overflow: hidden;
+}
+
+.camera-view {
+  width: 750rpx;
+  height: 520rpx;
+  background-color: #000000;
+}
+
+.camera-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 750rpx;
+  height: 520rpx;
+  background-color: #1a1a1a;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.placeholder-text {
+  font-size: 32rpx;
+  color: #ffffff;
+  margin-bottom: 12rpx;
+}
+
+.placeholder-subtitle {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.camera-overlay {
+  padding: 16rpx 20rpx 18rpx;
+}
+
+.camera-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2c405a;
+  margin-bottom: 6rpx;
+}
+
+.camera-subtitle {
+  font-size: 24rpx;
+  color: #555555;
+}
+
+.switch-row {
+  margin-top: 10rpx;
+}
+
+.camera-tip {
+  font-size: 22rpx;
+  color: #888888;
+  margin-bottom: 6rpx;
+}
+
+.switch-btn {
+  padding-left: 22rpx;
+  padding-right: 22rpx;
+  padding-top: 8rpx;
+  padding-bottom: 8rpx;
+  border-radius: 32rpx;
+  background-color: #e6f1ff;
+}
+
+.switch-text {
+  font-size: 24rpx;
+  color: #2f80ff;
+}
+
+.debug-panel {
+  margin-top: 12rpx;
+  padding: 12rpx;
+  background-color: #fff3cd;
+  border-radius: 8rpx;
+  border-width: 1rpx;
+  border-color: #ffc107;
+}
+
+.debug-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #856404;
+  margin-bottom: 8rpx;
+}
+
+.debug-item {
+  font-size: 22rpx;
+  color: #856404;
+  margin-bottom: 4rpx;
+  lines: 3;
+}
+
+.debug-error {
+  color: #dc3545;
+}
+
+.debug-btn-row {
+  flex-direction: row;
+  margin-top: 8rpx;
+  justify-content: space-between;
+}
+
+.debug-btn {
+  flex: 1;
+  margin-right: 8rpx;
+  padding: 6rpx 12rpx;
+  background-color: #ffc107;
+  border-radius: 6rpx;
+  align-items: center;
+  justify-content: center;
+}
+
+.debug-btn:last-child {
+  margin-right: 0;
+}
+
+.debug-btn-text {
+  font-size: 22rpx;
+  color: #856404;
+}
+
+.debug-toggle {
+  margin-top: 8rpx;
+  align-items: center;
+}
+
+.debug-toggle-btn {
+  padding: 6rpx 16rpx;
+  background-color: #e6f1ff;
+  border-radius: 6rpx;
+}
+
+.debug-toggle-text {
+  font-size: 22rpx;
+  color: #2f80ff;
+}
+
+.status-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.status-card {
+  flex: 1;
+  margin-right: 8rpx;
+  border-radius: 20rpx;
+  padding: 14rpx 16rpx;
+  background-color: #f5f7fb;
+}
+
+.status-card:last-child {
+  margin-right: 0;
+}
+
+.status-label {
+  font-size: 24rpx;
+  color: #555555;
+}
+
+.status-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-top: 4rpx;
+}
+
+.status-good .status-value {
+  color: #2f9b59;
+}
+
+.status-focus .status-value {
+  color: #2f9b59;
+}
+
+.status-bend .status-value,
+.status-distract .status-value,
+.status-idle .status-value {
+  color: #f0ad4e;
+}
+
+.status-lie .status-value,
+.status-leave .status-value {
+  color: #dd524d;
+}
+
+.encourage {
+  margin-top: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+.encourage-text {
+  font-size: 26rpx;
+  color: #2f9b59;
+}
+
+.reminder-card {
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  padding: 18rpx 20rpx 20rpx;
+  margin-bottom: 8rpx;
+}
+
+.reminder-header {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.reminder-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2c405a;
+}
+
+.reminder-count {
+  font-size: 24rpx;
+  color: #555555;
+}
+
+.reminder-content {
+  flex-direction: row;
+  align-items: center;
+}
+
+.reminder-icon {
+  font-size: 30rpx;
+  margin-right: 6rpx;
+}
+
+.reminder-text {
+  font-size: 26rpx;
+  color: #3f536e;
+}
+
+.reminder-empty {
+  font-size: 26rpx;
+  color: #3f536e;
+}
+
+.bottom-area {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 40rpx;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+
+.danger-btn {
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #ff6b6b;
+  align-items: center;
+  justify-content: center;
+}
+
+.danger-text {
+  font-size: 32rpx;
+  color: #ffffff;
+}
+</style>
+
+
