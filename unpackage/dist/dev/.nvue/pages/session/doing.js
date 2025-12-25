@@ -50,47 +50,219 @@ function formatDuration(ms) {
   return `${pad(minutes)}:${pad(seconds)}`;
 }
 const postureTips = [
-  "小朋友坐直一点，肩膀放松，我们一起保护脊梁骨～",
-  "身体不要太贴近书本，眼睛和书本要保持一尺的距离哦。",
-  "记得两只脚平放在地上，像一棵小树一样站得稳。"
+  {
+    text: "小朋友坐直一点，肩膀放松，我们一起保护脊梁骨～",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  },
+  {
+    text: "身体不要太贴近书本，眼睛和书本要保持一尺的距离哦。",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  },
+  {
+    text: "记得两只脚平放在地上，像一棵小树一样站得稳。",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  }
 ];
 const focusTips = [
-  "刚刚有点走神了，我们一起把注意力拉回来吧～",
-  "先把这道题认真完成，再想别的事情也不迟。",
-  "再坚持几分钟，你今天就会比昨天更棒！"
+  {
+    text: "刚刚有点走神了，我们一起把注意力拉回来吧～",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  },
+  {
+    text: "先把这道题认真完成，再想别的事情也不迟。",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  },
+  {
+    text: "再坚持几分钟，你今天就会比昨天更棒！",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  }
 ];
 const efficiencyTips = [
-  "如果一道题卡住太久，可以先做后面的，再回来解决它。",
-  "先完成简单的题目，给自己一点小小的成就感～"
+  {
+    text: "如果一道题卡住太久，可以先做后面的，再回来解决它。",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  },
+  {
+    text: "先完成简单的题目，给自己一点小小的成就感～",
+    audio: "/static/ztjun-mstts-1766625175369.wav"
+  }
 ];
+const postureTexts = postureTips.map((tip) => tip.text);
+const focusTexts = focusTips.map((tip) => tip.text);
+const efficiencyTexts = efficiencyTips.map((tip) => tip.text);
+[
+  ...postureTexts,
+  ...focusTexts,
+  ...efficiencyTexts
+];
+const textToAudioMap = {};
+postureTips.forEach((tip) => {
+  textToAudioMap[tip.text] = tip.audio;
+});
+focusTips.forEach((tip) => {
+  textToAudioMap[tip.text] = tip.audio;
+});
+efficiencyTips.forEach((tip) => {
+  textToAudioMap[tip.text] = tip.audio;
+});
+const defaultAudioFiles = {
+  posture: "/static/ztjun-mstts-1766625175369.wav",
+  focus: "/static/ztjun-mstts-1766625175369.wav",
+  efficiency: "/static/ztjun-mstts-1766625175369.wav"
+};
 function pickRandom(list) {
   const idx = Math.floor(Math.random() * list.length);
   return list[idx];
 }
 async function playReminder(type, fixedText) {
   let text = fixedText;
+  let audioPath = null;
   if (!text) {
     if (type === "posture") {
       text = pickRandom(postureTips);
     } else if (type === "focus") {
       text = pickRandom(focusTips);
+    } else if (type === "efficiency") {
+      text = pickRandom(efficiencyTips);
     } else {
       text = pickRandom(efficiencyTips);
     }
   }
+  audioPath = textToAudioMap[text];
+  if (!audioPath && type) {
+    audioPath = defaultAudioFiles[type];
+  }
+  if (audioPath) {
+    const audioPlayed = await playAudio(audioPath);
+    if (!audioPlayed) {
+      showToast(text);
+    }
+  } else {
+    showToast(text);
+  }
+  vibrate();
+  return text;
+}
+function showToast(text) {
   try {
     uni.showToast({
       title: text.length > 7 ? text.slice(0, 7) + "..." : text,
       icon: "none",
       duration: 2e3
     });
-    if (uni.vibrateShort) {
-      uni.vibrateShort({});
-    }
   } catch (e) {
-    formatAppLog("warn", "at common/voiceReminder.js:30", "playReminder toast error", e);
+    formatAppLog("warn", "at common/voiceReminder.js:76", "showToast error", e);
   }
-  return text;
+}
+function vibrate() {
+  if (uni.vibrateShort) {
+    try {
+      uni.vibrateShort({});
+    } catch (e) {
+      formatAppLog("warn", "at common/voiceReminder.js:88", "vibrateShort error", e);
+    }
+  }
+}
+async function playAudio(audioPath) {
+  if (!audioPath) {
+    formatAppLog("warn", "at common/voiceReminder.js:100", "音频路径为空");
+    return false;
+  }
+  let processedPath = audioPath;
+  if (audioPath.startsWith("/assets/")) {
+    processedPath = audioPath.replace("/assets/", "/static/");
+  }
+  formatAppLog("log", "at common/voiceReminder.js:121", "原始音频路径:", audioPath);
+  formatAppLog("log", "at common/voiceReminder.js:122", "处理后音频路径:", processedPath);
+  try {
+    const audioContext = uni.createInnerAudioContext();
+    audioContext.src = processedPath;
+    audioContext.autoplay = false;
+    audioContext.loop = false;
+    audioContext.volume = 1;
+    return new Promise((resolve) => {
+      let resolved = false;
+      let playStarted = false;
+      const cleanup = () => {
+        if (!resolved) {
+          resolved = true;
+          try {
+            audioContext.destroy();
+          } catch (e) {
+            formatAppLog("warn", "at common/voiceReminder.js:144", "销毁音频上下文失败:", e);
+          }
+        }
+      };
+      audioContext.onCanplay(() => {
+        formatAppLog("log", "at common/voiceReminder.js:150", "音频可以播放:", processedPath);
+        if (!playStarted) {
+          playStarted = true;
+          try {
+            audioContext.play();
+          } catch (playError) {
+            formatAppLog("error", "at common/voiceReminder.js:156", "在canplay中调用play()失败:", playError);
+            cleanup();
+            resolve(false);
+          }
+        }
+      });
+      audioContext.onPlay(() => {
+        formatAppLog("log", "at common/voiceReminder.js:164", "音频开始播放:", processedPath);
+        if (!resolved) {
+          resolved = true;
+          resolve(true);
+        }
+      });
+      audioContext.onError((error) => {
+        formatAppLog("error", "at common/voiceReminder.js:172", "音频播放失败:", processedPath, error);
+        cleanup();
+        resolve(false);
+      });
+      audioContext.onEnded(() => {
+        formatAppLog("log", "at common/voiceReminder.js:178", "音频播放结束:", processedPath);
+        cleanup();
+      });
+      audioContext.onStop(() => {
+        formatAppLog("log", "at common/voiceReminder.js:183", "音频播放停止:", processedPath);
+        if (!resolved) {
+          formatAppLog("warn", "at common/voiceReminder.js:186", "音频立即停止，可能播放失败");
+          cleanup();
+          resolve(false);
+        } else {
+          cleanup();
+        }
+      });
+      setTimeout(() => {
+        if (!resolved) {
+          formatAppLog("warn", "at common/voiceReminder.js:197", "音频播放超时:", processedPath);
+          cleanup();
+          resolve(false);
+        }
+      }, 8e3);
+      setTimeout(() => {
+        if (!playStarted && !resolved) {
+          playStarted = true;
+          try {
+            formatAppLog("log", "at common/voiceReminder.js:208", "尝试直接播放音频:", processedPath);
+            audioContext.play();
+          } catch (playError) {
+            formatAppLog("error", "at common/voiceReminder.js:211", "直接调用play()失败:", playError);
+            cleanup();
+            resolve(false);
+          }
+        }
+      }, 100);
+    });
+  } catch (error) {
+    formatAppLog("error", "at common/voiceReminder.js:219", "创建音频上下文失败:", error);
+    return false;
+  }
+}
+async function replayLastReminder(lastText) {
+  if (!lastText) {
+    return "";
+  }
+  return await playReminder(null, lastText);
 }
 const DB_NAME = "homework_photos.db";
 const TABLE_NAME = "photos";
@@ -473,12 +645,19 @@ const _sfc_main = {
           this.focusState = snapshot.focusState;
           this.taskState = snapshot.taskState;
           const isBad = snapshot.postureState !== "good" || snapshot.focusState !== "focus";
+          formatAppLog("log", "at pages/session/doing.nvue:287", "检测状态:", {
+            posture: snapshot.postureState,
+            focus: snapshot.focusState,
+            isBad,
+            badStreak: this.badStreak
+          });
           if (isBad) {
             this.badStreak += 1;
           } else {
             this.badStreak = 0;
           }
-          if (this.badStreak >= 2) {
+          if (this.badStreak >= 1) {
+            formatAppLog("log", "at pages/session/doing.nvue:301", "触发提醒!", snapshot);
             this.triggerReminder(snapshot);
             this.badStreak = 0;
           }
@@ -493,14 +672,14 @@ const _sfc_main = {
       this.capturePhoto();
       this.photoTimer = setInterval(() => {
         this.capturePhoto();
-      }, 1e3);
+      }, 3e4);
     },
     /**
      * 拍照
      */
     capturePhoto() {
       if (!this.pusherContext || !this.pusherReady) {
-        formatAppLog("log", "at pages/session/doing.nvue:320", "摄像头未准备好，无法拍照");
+        formatAppLog("log", "at pages/session/doing.nvue:330", "摄像头未准备好，无法拍照");
         return;
       }
       try {
@@ -508,7 +687,7 @@ const _sfc_main = {
           quality: "high",
           // 高质量
           success: async (res) => {
-            formatAppLog("log", "at pages/session/doing.nvue:331", "snapshot 返回数据", res);
+            formatAppLog("log", "at pages/session/doing.nvue:341", "snapshot 返回数据", res);
             let photoPath = null;
             if (res.message && res.message.tempImagePath) {
               photoPath = res.message.tempImagePath;
@@ -522,7 +701,7 @@ const _sfc_main = {
               photoPath = res.filePath;
             }
             if (!photoPath) {
-              formatAppLog("error", "at pages/session/doing.nvue:349", "拍照失败：未获取到照片路径", res);
+              formatAppLog("error", "at pages/session/doing.nvue:359", "拍照失败：未获取到照片路径", res);
               uni.showToast({
                 title: "拍照失败：未获取到照片路径",
                 icon: "none",
@@ -530,7 +709,7 @@ const _sfc_main = {
               });
               return;
             }
-            formatAppLog("log", "at pages/session/doing.nvue:358", "获取到照片路径", photoPath);
+            formatAppLog("log", "at pages/session/doing.nvue:368", "获取到照片路径", photoPath);
             const timestamp = Date.now();
             const elapsedTime = timestamp - this.startTime;
             const elapsedText = this.formatElapsedTime(elapsedTime);
@@ -541,13 +720,13 @@ const _sfc_main = {
               elapsedText
             };
             this.photos.push(photoInfo);
-            formatAppLog("log", "at pages/session/doing.nvue:373", "拍照成功", photoInfo);
+            formatAppLog("log", "at pages/session/doing.nvue:383", "拍照成功", photoInfo);
             try {
               if (!this.sessionId || this.sessionId === "" || this.sessionId === "0") {
                 this.sessionId = String(this.startTime);
-                formatAppLog("warn", "at pages/session/doing.nvue:380", "capturePhoto: sessionId 为空，重新初始化", this.sessionId);
+                formatAppLog("warn", "at pages/session/doing.nvue:390", "capturePhoto: sessionId 为空，重新初始化", this.sessionId);
               }
-              formatAppLog("log", "at pages/session/doing.nvue:383", "准备保存照片，sessionId:", this.sessionId, "photoPath:", photoPath.substring(0, 50));
+              formatAppLog("log", "at pages/session/doing.nvue:393", "准备保存照片，sessionId:", this.sessionId, "photoPath:", photoPath.substring(0, 50));
               await savePhoto(
                 this.sessionId,
                 photoPath,
@@ -555,10 +734,10 @@ const _sfc_main = {
                 elapsedTime,
                 elapsedText
               );
-              formatAppLog("log", "at pages/session/doing.nvue:392", "照片已保存到数据库");
+              formatAppLog("log", "at pages/session/doing.nvue:402", "照片已保存到数据库");
             } catch (dbErr) {
-              formatAppLog("error", "at pages/session/doing.nvue:394", "保存照片到数据库失败", dbErr);
-              formatAppLog("error", "at pages/session/doing.nvue:395", "失败时的 sessionId:", this.sessionId, "类型:", typeof this.sessionId);
+              formatAppLog("error", "at pages/session/doing.nvue:404", "保存照片到数据库失败", dbErr);
+              formatAppLog("error", "at pages/session/doing.nvue:405", "失败时的 sessionId:", this.sessionId, "类型:", typeof this.sessionId);
             }
             uni.showToast({
               title: `已保存照片 (${this.photos.length}张)`,
@@ -567,11 +746,11 @@ const _sfc_main = {
             });
           },
           fail: (err) => {
-            formatAppLog("error", "at pages/session/doing.nvue:407", "拍照失败", err);
+            formatAppLog("error", "at pages/session/doing.nvue:417", "拍照失败", err);
           }
         });
       } catch (e) {
-        formatAppLog("error", "at pages/session/doing.nvue:411", "拍照异常", e);
+        formatAppLog("error", "at pages/session/doing.nvue:421", "拍照异常", e);
       }
     },
     /**
@@ -597,7 +776,7 @@ const _sfc_main = {
     async replayLastReminder() {
       if (!this.lastReminderText)
         return;
-      await playReminder("repeat", this.lastReminderText);
+      await replayLastReminder(this.lastReminderText);
     },
     switchCamera() {
       this.devicePosition = this.devicePosition === "front" ? "back" : "front";
@@ -606,14 +785,14 @@ const _sfc_main = {
         try {
           this.pusherContext.switchCamera({
             success: () => {
-              formatAppLog("log", "at pages/session/doing.nvue:453", "摄像头切换成功");
+              formatAppLog("log", "at pages/session/doing.nvue:463", "摄像头切换成功");
             },
             fail: (err) => {
-              formatAppLog("log", "at pages/session/doing.nvue:456", "摄像头切换失败", err);
+              formatAppLog("log", "at pages/session/doing.nvue:466", "摄像头切换失败", err);
             }
           });
         } catch (e) {
-          formatAppLog("log", "at pages/session/doing.nvue:460", "switchCamera 方法可能不支持，使用 device-position 属性切换");
+          formatAppLog("log", "at pages/session/doing.nvue:470", "switchCamera 方法可能不支持，使用 device-position 属性切换");
         }
       }
     },
@@ -644,15 +823,15 @@ const _sfc_main = {
       this.$nextTick(() => {
         try {
           this.pusherContext = uni.createLivePusherContext("livePusher", this);
-          formatAppLog("log", "at pages/session/doing.nvue:494", "live-pusher context created", this.pusherContext);
+          formatAppLog("log", "at pages/session/doing.nvue:504", "live-pusher context created", this.pusherContext);
         } catch (e) {
-          formatAppLog("error", "at pages/session/doing.nvue:496", "创建 live-pusher context 失败", e);
+          formatAppLog("error", "at pages/session/doing.nvue:506", "创建 live-pusher context 失败", e);
           setTimeout(() => {
             try {
               this.pusherContext = uni.createLivePusherContext("livePusher", this);
-              formatAppLog("log", "at pages/session/doing.nvue:501", "live-pusher context 重试成功", this.pusherContext);
+              formatAppLog("log", "at pages/session/doing.nvue:511", "live-pusher context 重试成功", this.pusherContext);
             } catch (e2) {
-              formatAppLog("error", "at pages/session/doing.nvue:503", "live-pusher context 重试也失败", e2);
+              formatAppLog("error", "at pages/session/doing.nvue:513", "live-pusher context 重试也失败", e2);
             }
           }, 500);
         }
@@ -666,11 +845,11 @@ const _sfc_main = {
         this.initLivePusher();
       }
       if (!this.permissionGranted) {
-        formatAppLog("log", "at pages/session/doing.nvue:519", "权限未授予，等待权限授予后再启动");
+        formatAppLog("log", "at pages/session/doing.nvue:529", "权限未授予，等待权限授予后再启动");
         return;
       }
       if (!this.pusherContext) {
-        formatAppLog("log", "at pages/session/doing.nvue:524", "pusherContext 不存在，重新初始化");
+        formatAppLog("log", "at pages/session/doing.nvue:534", "pusherContext 不存在，重新初始化");
         this.initLivePusher();
         setTimeout(() => {
           this._doStartLivePusher();
@@ -684,7 +863,7 @@ const _sfc_main = {
      */
     _doStartLivePusher() {
       if (!this.pusherContext) {
-        formatAppLog("error", "at pages/session/doing.nvue:541", "pusherContext 仍然不存在");
+        formatAppLog("error", "at pages/session/doing.nvue:551", "pusherContext 仍然不存在");
         return;
       }
       if (typeof this.pusherContext.startPreview === "function") {
@@ -692,10 +871,10 @@ const _sfc_main = {
           success: () => {
             this.pusherReady = true;
             this.cameraStatus = "摄像头预览已启动 ✓";
-            formatAppLog("log", "at pages/session/doing.nvue:551", "live-pusher 预览启动成功");
+            formatAppLog("log", "at pages/session/doing.nvue:561", "live-pusher 预览启动成功");
           },
           fail: (err) => {
-            formatAppLog("error", "at pages/session/doing.nvue:554", "live-pusher startPreview 失败", err);
+            formatAppLog("error", "at pages/session/doing.nvue:564", "live-pusher startPreview 失败", err);
             this._tryStartMethod();
           }
         });
@@ -713,14 +892,14 @@ const _sfc_main = {
         success: () => {
           this.pusherReady = true;
           this.cameraStatus = "摄像头预览已启动 ✓";
-          formatAppLog("log", "at pages/session/doing.nvue:575", "live-pusher start 方法成功");
+          formatAppLog("log", "at pages/session/doing.nvue:585", "live-pusher start 方法成功");
         },
         fail: (err) => {
           this.cameraStatus = "启动失败: " + JSON.stringify(err);
           this.cameraError = JSON.stringify(err);
-          formatAppLog("error", "at pages/session/doing.nvue:580", "live-pusher start 方法失败", err);
+          formatAppLog("error", "at pages/session/doing.nvue:590", "live-pusher start 方法失败", err);
           const errorMsg = err.errMsg || err.message || JSON.stringify(err);
-          formatAppLog("error", "at pages/session/doing.nvue:584", "详细错误信息:", errorMsg);
+          formatAppLog("error", "at pages/session/doing.nvue:594", "详细错误信息:", errorMsg);
           if (!this.showDebugInfo) {
             this.showDebugInfo = true;
           }
@@ -740,16 +919,16 @@ const _sfc_main = {
         this.pusherContext.stopPreview({
           success: () => {
             this.pusherReady = false;
-            formatAppLog("log", "at pages/session/doing.nvue:608", "live-pusher 预览已停止");
+            formatAppLog("log", "at pages/session/doing.nvue:618", "live-pusher 预览已停止");
           },
           fail: () => {
             this.pusherContext.stop({
               success: () => {
                 this.pusherReady = false;
-                formatAppLog("log", "at pages/session/doing.nvue:615", "live-pusher 已停止");
+                formatAppLog("log", "at pages/session/doing.nvue:625", "live-pusher 已停止");
               },
               fail: (err) => {
-                formatAppLog("log", "at pages/session/doing.nvue:618", "live-pusher 停止失败", err);
+                formatAppLog("log", "at pages/session/doing.nvue:628", "live-pusher 停止失败", err);
               }
             });
           }
@@ -769,20 +948,20 @@ const _sfc_main = {
             if (granted) {
               this.permissionStatus = "已授予";
               this.permissionGranted = true;
-              formatAppLog("log", "at pages/session/doing.nvue:642", "摄像头权限已授予", resultObj);
+              formatAppLog("log", "at pages/session/doing.nvue:652", "摄像头权限已授予", resultObj);
               setTimeout(() => {
                 this.startLivePusher();
               }, 300);
             } else {
               this.permissionStatus = "被拒绝";
               this.permissionGranted = false;
-              formatAppLog("log", "at pages/session/doing.nvue:651", "摄像头权限被拒绝", resultObj);
+              formatAppLog("log", "at pages/session/doing.nvue:661", "摄像头权限被拒绝", resultObj);
             }
           },
           (err) => {
             this.permissionStatus = "请求失败: " + JSON.stringify(err);
             this.permissionGranted = false;
-            formatAppLog("log", "at pages/session/doing.nvue:657", "摄像头权限请求失败: " + JSON.stringify(err));
+            formatAppLog("log", "at pages/session/doing.nvue:667", "摄像头权限请求失败: " + JSON.stringify(err));
             uni.showToast({
               title: "未授予摄像头权限，无法预览画面",
               icon: "none",
@@ -793,14 +972,14 @@ const _sfc_main = {
       } catch (e) {
         this.permissionStatus = "异常: " + e.toString();
         this.permissionGranted = false;
-        formatAppLog("log", "at pages/session/doing.nvue:668", "摄像头权限请求异常: " + e);
+        formatAppLog("log", "at pages/session/doing.nvue:678", "摄像头权限请求异常: " + e);
       }
     },
     /**
      * live-pusher 状态变化事件
      */
     onPusherStateChange(e) {
-      formatAppLog("log", "at pages/session/doing.nvue:685", "live-pusher state change", e);
+      formatAppLog("log", "at pages/session/doing.nvue:695", "live-pusher state change", e);
       const code = e.detail.code;
       switch (code) {
         case 1001:
@@ -862,7 +1041,7 @@ const _sfc_main = {
           this.cameraError = "录屏失败";
           break;
         default:
-          formatAppLog("log", "at pages/session/doing.nvue:749", "未知状态码:", code);
+          formatAppLog("log", "at pages/session/doing.nvue:759", "未知状态码:", code);
       }
     },
     /**
@@ -874,7 +1053,7 @@ const _sfc_main = {
      * live-pusher 错误事件
      */
     onPusherError(e) {
-      formatAppLog("error", "at pages/session/doing.nvue:765", "live-pusher error", e);
+      formatAppLog("error", "at pages/session/doing.nvue:775", "live-pusher error", e);
       this.cameraError = "live-pusher 错误: " + JSON.stringify(e.detail);
       this.cameraStatus = "摄像头错误";
       if (!this.showDebugInfo) {
@@ -911,7 +1090,7 @@ const _sfc_main = {
         }
       } catch (e) {
         this.cameraStatus = "检查失败: " + e.toString();
-        formatAppLog("log", "at pages/session/doing.nvue:813", "检查摄像头状态失败", e);
+        formatAppLog("log", "at pages/session/doing.nvue:823", "检查摄像头状态失败", e);
       }
     }
   }

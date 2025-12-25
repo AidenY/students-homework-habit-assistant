@@ -136,19 +136,66 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     return `${pad(minutes)}:${pad(seconds)}`;
   }
   var postureTips = [
-    "\u5C0F\u670B\u53CB\u5750\u76F4\u4E00\u70B9\uFF0C\u80A9\u8180\u653E\u677E\uFF0C\u6211\u4EEC\u4E00\u8D77\u4FDD\u62A4\u810A\u6881\u9AA8\uFF5E",
-    "\u8EAB\u4F53\u4E0D\u8981\u592A\u8D34\u8FD1\u4E66\u672C\uFF0C\u773C\u775B\u548C\u4E66\u672C\u8981\u4FDD\u6301\u4E00\u5C3A\u7684\u8DDD\u79BB\u54E6\u3002",
-    "\u8BB0\u5F97\u4E24\u53EA\u811A\u5E73\u653E\u5728\u5730\u4E0A\uFF0C\u50CF\u4E00\u68F5\u5C0F\u6811\u4E00\u6837\u7AD9\u5F97\u7A33\u3002"
+    {
+      text: "\u5C0F\u670B\u53CB\u5750\u76F4\u4E00\u70B9\uFF0C\u80A9\u8180\u653E\u677E\uFF0C\u6211\u4EEC\u4E00\u8D77\u4FDD\u62A4\u810A\u6881\u9AA8\uFF5E",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    },
+    {
+      text: "\u8EAB\u4F53\u4E0D\u8981\u592A\u8D34\u8FD1\u4E66\u672C\uFF0C\u773C\u775B\u548C\u4E66\u672C\u8981\u4FDD\u6301\u4E00\u5C3A\u7684\u8DDD\u79BB\u54E6\u3002",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    },
+    {
+      text: "\u8BB0\u5F97\u4E24\u53EA\u811A\u5E73\u653E\u5728\u5730\u4E0A\uFF0C\u50CF\u4E00\u68F5\u5C0F\u6811\u4E00\u6837\u7AD9\u5F97\u7A33\u3002",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    }
   ];
   var focusTips = [
-    "\u521A\u521A\u6709\u70B9\u8D70\u795E\u4E86\uFF0C\u6211\u4EEC\u4E00\u8D77\u628A\u6CE8\u610F\u529B\u62C9\u56DE\u6765\u5427\uFF5E",
-    "\u5148\u628A\u8FD9\u9053\u9898\u8BA4\u771F\u5B8C\u6210\uFF0C\u518D\u60F3\u522B\u7684\u4E8B\u60C5\u4E5F\u4E0D\u8FDF\u3002",
-    "\u518D\u575A\u6301\u51E0\u5206\u949F\uFF0C\u4F60\u4ECA\u5929\u5C31\u4F1A\u6BD4\u6628\u5929\u66F4\u68D2\uFF01"
+    {
+      text: "\u521A\u521A\u6709\u70B9\u8D70\u795E\u4E86\uFF0C\u6211\u4EEC\u4E00\u8D77\u628A\u6CE8\u610F\u529B\u62C9\u56DE\u6765\u5427\uFF5E",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    },
+    {
+      text: "\u5148\u628A\u8FD9\u9053\u9898\u8BA4\u771F\u5B8C\u6210\uFF0C\u518D\u60F3\u522B\u7684\u4E8B\u60C5\u4E5F\u4E0D\u8FDF\u3002",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    },
+    {
+      text: "\u518D\u575A\u6301\u51E0\u5206\u949F\uFF0C\u4F60\u4ECA\u5929\u5C31\u4F1A\u6BD4\u6628\u5929\u66F4\u68D2\uFF01",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    }
   ];
   var efficiencyTips = [
-    "\u5982\u679C\u4E00\u9053\u9898\u5361\u4F4F\u592A\u4E45\uFF0C\u53EF\u4EE5\u5148\u505A\u540E\u9762\u7684\uFF0C\u518D\u56DE\u6765\u89E3\u51B3\u5B83\u3002",
-    "\u5148\u5B8C\u6210\u7B80\u5355\u7684\u9898\u76EE\uFF0C\u7ED9\u81EA\u5DF1\u4E00\u70B9\u5C0F\u5C0F\u7684\u6210\u5C31\u611F\uFF5E"
+    {
+      text: "\u5982\u679C\u4E00\u9053\u9898\u5361\u4F4F\u592A\u4E45\uFF0C\u53EF\u4EE5\u5148\u505A\u540E\u9762\u7684\uFF0C\u518D\u56DE\u6765\u89E3\u51B3\u5B83\u3002",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    },
+    {
+      text: "\u5148\u5B8C\u6210\u7B80\u5355\u7684\u9898\u76EE\uFF0C\u7ED9\u81EA\u5DF1\u4E00\u70B9\u5C0F\u5C0F\u7684\u6210\u5C31\u611F\uFF5E",
+      audio: "/static/ztjun-mstts-1766625175369.wav"
+    }
   ];
+  var postureTexts = postureTips.map((tip) => tip.text);
+  var focusTexts = focusTips.map((tip) => tip.text);
+  var efficiencyTexts = efficiencyTips.map((tip) => tip.text);
+  [
+    ...postureTexts,
+    ...focusTexts,
+    ...efficiencyTexts
+  ];
+  var textToAudioMap = {};
+  postureTips.forEach((tip) => {
+    textToAudioMap[tip.text] = tip.audio;
+  });
+  focusTips.forEach((tip) => {
+    textToAudioMap[tip.text] = tip.audio;
+  });
+  efficiencyTips.forEach((tip) => {
+    textToAudioMap[tip.text] = tip.audio;
+  });
+  var defaultAudioFiles = {
+    posture: "/static/ztjun-mstts-1766625175369.wav",
+    focus: "/static/ztjun-mstts-1766625175369.wav",
+    efficiency: "/static/ztjun-mstts-1766625175369.wav"
+  };
   function pickRandom(list) {
     const idx = Math.floor(Math.random() * list.length);
     return list[idx];
@@ -156,28 +203,157 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   function playReminder(type, fixedText) {
     return __async(this, null, function* () {
       let text = fixedText;
+      let audioPath = null;
       if (!text) {
         if (type === "posture") {
           text = pickRandom(postureTips);
         } else if (type === "focus") {
           text = pickRandom(focusTips);
+        } else if (type === "efficiency") {
+          text = pickRandom(efficiencyTips);
         } else {
           text = pickRandom(efficiencyTips);
         }
       }
-      try {
-        uni.showToast({
-          title: text.length > 7 ? text.slice(0, 7) + "..." : text,
-          icon: "none",
-          duration: 2e3
-        });
-        if (uni.vibrateShort) {
-          uni.vibrateShort({});
-        }
-      } catch (e) {
-        formatAppLog("warn", "at common/voiceReminder.js:30", "playReminder toast error", e);
+      audioPath = textToAudioMap[text];
+      if (!audioPath && type) {
+        audioPath = defaultAudioFiles[type];
       }
+      if (audioPath) {
+        const audioPlayed = yield playAudio(audioPath);
+        if (!audioPlayed) {
+          showToast(text);
+        }
+      } else {
+        showToast(text);
+      }
+      vibrate();
       return text;
+    });
+  }
+  function showToast(text) {
+    try {
+      uni.showToast({
+        title: text.length > 7 ? text.slice(0, 7) + "..." : text,
+        icon: "none",
+        duration: 2e3
+      });
+    } catch (e) {
+      formatAppLog("warn", "at common/voiceReminder.js:76", "showToast error", e);
+    }
+  }
+  function vibrate() {
+    if (uni.vibrateShort) {
+      try {
+        uni.vibrateShort({});
+      } catch (e) {
+        formatAppLog("warn", "at common/voiceReminder.js:88", "vibrateShort error", e);
+      }
+    }
+  }
+  function playAudio(audioPath) {
+    return __async(this, null, function* () {
+      if (!audioPath) {
+        formatAppLog("warn", "at common/voiceReminder.js:100", "\u97F3\u9891\u8DEF\u5F84\u4E3A\u7A7A");
+        return false;
+      }
+      let processedPath = audioPath;
+      if (audioPath.startsWith("/assets/")) {
+        processedPath = audioPath.replace("/assets/", "/static/");
+      }
+      formatAppLog("log", "at common/voiceReminder.js:121", "\u539F\u59CB\u97F3\u9891\u8DEF\u5F84:", audioPath);
+      formatAppLog("log", "at common/voiceReminder.js:122", "\u5904\u7406\u540E\u97F3\u9891\u8DEF\u5F84:", processedPath);
+      try {
+        const audioContext = uni.createInnerAudioContext();
+        audioContext.src = processedPath;
+        audioContext.autoplay = false;
+        audioContext.loop = false;
+        audioContext.volume = 1;
+        return new Promise((resolve) => {
+          let resolved = false;
+          let playStarted = false;
+          const cleanup = () => {
+            if (!resolved) {
+              resolved = true;
+              try {
+                audioContext.destroy();
+              } catch (e) {
+                formatAppLog("warn", "at common/voiceReminder.js:144", "\u9500\u6BC1\u97F3\u9891\u4E0A\u4E0B\u6587\u5931\u8D25:", e);
+              }
+            }
+          };
+          audioContext.onCanplay(() => {
+            formatAppLog("log", "at common/voiceReminder.js:150", "\u97F3\u9891\u53EF\u4EE5\u64AD\u653E:", processedPath);
+            if (!playStarted) {
+              playStarted = true;
+              try {
+                audioContext.play();
+              } catch (playError) {
+                formatAppLog("error", "at common/voiceReminder.js:156", "\u5728canplay\u4E2D\u8C03\u7528play()\u5931\u8D25:", playError);
+                cleanup();
+                resolve(false);
+              }
+            }
+          });
+          audioContext.onPlay(() => {
+            formatAppLog("log", "at common/voiceReminder.js:164", "\u97F3\u9891\u5F00\u59CB\u64AD\u653E:", processedPath);
+            if (!resolved) {
+              resolved = true;
+              resolve(true);
+            }
+          });
+          audioContext.onError((error) => {
+            formatAppLog("error", "at common/voiceReminder.js:172", "\u97F3\u9891\u64AD\u653E\u5931\u8D25:", processedPath, error);
+            cleanup();
+            resolve(false);
+          });
+          audioContext.onEnded(() => {
+            formatAppLog("log", "at common/voiceReminder.js:178", "\u97F3\u9891\u64AD\u653E\u7ED3\u675F:", processedPath);
+            cleanup();
+          });
+          audioContext.onStop(() => {
+            formatAppLog("log", "at common/voiceReminder.js:183", "\u97F3\u9891\u64AD\u653E\u505C\u6B62:", processedPath);
+            if (!resolved) {
+              formatAppLog("warn", "at common/voiceReminder.js:186", "\u97F3\u9891\u7ACB\u5373\u505C\u6B62\uFF0C\u53EF\u80FD\u64AD\u653E\u5931\u8D25");
+              cleanup();
+              resolve(false);
+            } else {
+              cleanup();
+            }
+          });
+          setTimeout(() => {
+            if (!resolved) {
+              formatAppLog("warn", "at common/voiceReminder.js:197", "\u97F3\u9891\u64AD\u653E\u8D85\u65F6:", processedPath);
+              cleanup();
+              resolve(false);
+            }
+          }, 8e3);
+          setTimeout(() => {
+            if (!playStarted && !resolved) {
+              playStarted = true;
+              try {
+                formatAppLog("log", "at common/voiceReminder.js:208", "\u5C1D\u8BD5\u76F4\u63A5\u64AD\u653E\u97F3\u9891:", processedPath);
+                audioContext.play();
+              } catch (playError) {
+                formatAppLog("error", "at common/voiceReminder.js:211", "\u76F4\u63A5\u8C03\u7528play()\u5931\u8D25:", playError);
+                cleanup();
+                resolve(false);
+              }
+            }
+          }, 100);
+        });
+      } catch (error) {
+        formatAppLog("error", "at common/voiceReminder.js:219", "\u521B\u5EFA\u97F3\u9891\u4E0A\u4E0B\u6587\u5931\u8D25:", error);
+        return false;
+      }
+    });
+  }
+  function replayLastReminder(lastText) {
+    return __async(this, null, function* () {
+      if (!lastText) {
+        return "";
+      }
+      return yield playReminder(null, lastText);
     });
   }
   var DB_NAME = "homework_photos.db";
@@ -561,12 +737,19 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             this.focusState = snapshot.focusState;
             this.taskState = snapshot.taskState;
             const isBad = snapshot.postureState !== "good" || snapshot.focusState !== "focus";
+            formatAppLog("log", "at pages/session/doing.nvue:287", "\u68C0\u6D4B\u72B6\u6001:", {
+              posture: snapshot.postureState,
+              focus: snapshot.focusState,
+              isBad,
+              badStreak: this.badStreak
+            });
             if (isBad) {
               this.badStreak += 1;
             } else {
               this.badStreak = 0;
             }
-            if (this.badStreak >= 2) {
+            if (this.badStreak >= 1) {
+              formatAppLog("log", "at pages/session/doing.nvue:301", "\u89E6\u53D1\u63D0\u9192!", snapshot);
               this.triggerReminder(snapshot);
               this.badStreak = 0;
             }
@@ -581,14 +764,14 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         this.capturePhoto();
         this.photoTimer = setInterval(() => {
           this.capturePhoto();
-        }, 1e3);
+        }, 3e4);
       },
       /**
        * 拍照
        */
       capturePhoto() {
         if (!this.pusherContext || !this.pusherReady) {
-          formatAppLog("log", "at pages/session/doing.nvue:320", "\u6444\u50CF\u5934\u672A\u51C6\u5907\u597D\uFF0C\u65E0\u6CD5\u62CD\u7167");
+          formatAppLog("log", "at pages/session/doing.nvue:330", "\u6444\u50CF\u5934\u672A\u51C6\u5907\u597D\uFF0C\u65E0\u6CD5\u62CD\u7167");
           return;
         }
         try {
@@ -596,7 +779,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             quality: "high",
             // 高质量
             success: (res) => __async(this, null, function* () {
-              formatAppLog("log", "at pages/session/doing.nvue:331", "snapshot \u8FD4\u56DE\u6570\u636E", res);
+              formatAppLog("log", "at pages/session/doing.nvue:341", "snapshot \u8FD4\u56DE\u6570\u636E", res);
               let photoPath = null;
               if (res.message && res.message.tempImagePath) {
                 photoPath = res.message.tempImagePath;
@@ -610,7 +793,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                 photoPath = res.filePath;
               }
               if (!photoPath) {
-                formatAppLog("error", "at pages/session/doing.nvue:349", "\u62CD\u7167\u5931\u8D25\uFF1A\u672A\u83B7\u53D6\u5230\u7167\u7247\u8DEF\u5F84", res);
+                formatAppLog("error", "at pages/session/doing.nvue:359", "\u62CD\u7167\u5931\u8D25\uFF1A\u672A\u83B7\u53D6\u5230\u7167\u7247\u8DEF\u5F84", res);
                 uni.showToast({
                   title: "\u62CD\u7167\u5931\u8D25\uFF1A\u672A\u83B7\u53D6\u5230\u7167\u7247\u8DEF\u5F84",
                   icon: "none",
@@ -618,7 +801,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                 });
                 return;
               }
-              formatAppLog("log", "at pages/session/doing.nvue:358", "\u83B7\u53D6\u5230\u7167\u7247\u8DEF\u5F84", photoPath);
+              formatAppLog("log", "at pages/session/doing.nvue:368", "\u83B7\u53D6\u5230\u7167\u7247\u8DEF\u5F84", photoPath);
               const timestamp = Date.now();
               const elapsedTime = timestamp - this.startTime;
               const elapsedText = this.formatElapsedTime(elapsedTime);
@@ -629,13 +812,13 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                 elapsedText
               };
               this.photos.push(photoInfo);
-              formatAppLog("log", "at pages/session/doing.nvue:373", "\u62CD\u7167\u6210\u529F", photoInfo);
+              formatAppLog("log", "at pages/session/doing.nvue:383", "\u62CD\u7167\u6210\u529F", photoInfo);
               try {
                 if (!this.sessionId || this.sessionId === "" || this.sessionId === "0") {
                   this.sessionId = String(this.startTime);
-                  formatAppLog("warn", "at pages/session/doing.nvue:380", "capturePhoto: sessionId \u4E3A\u7A7A\uFF0C\u91CD\u65B0\u521D\u59CB\u5316", this.sessionId);
+                  formatAppLog("warn", "at pages/session/doing.nvue:390", "capturePhoto: sessionId \u4E3A\u7A7A\uFF0C\u91CD\u65B0\u521D\u59CB\u5316", this.sessionId);
                 }
-                formatAppLog("log", "at pages/session/doing.nvue:383", "\u51C6\u5907\u4FDD\u5B58\u7167\u7247\uFF0CsessionId:", this.sessionId, "photoPath:", photoPath.substring(0, 50));
+                formatAppLog("log", "at pages/session/doing.nvue:393", "\u51C6\u5907\u4FDD\u5B58\u7167\u7247\uFF0CsessionId:", this.sessionId, "photoPath:", photoPath.substring(0, 50));
                 yield savePhoto(
                   this.sessionId,
                   photoPath,
@@ -643,10 +826,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                   elapsedTime,
                   elapsedText
                 );
-                formatAppLog("log", "at pages/session/doing.nvue:392", "\u7167\u7247\u5DF2\u4FDD\u5B58\u5230\u6570\u636E\u5E93");
+                formatAppLog("log", "at pages/session/doing.nvue:402", "\u7167\u7247\u5DF2\u4FDD\u5B58\u5230\u6570\u636E\u5E93");
               } catch (dbErr) {
-                formatAppLog("error", "at pages/session/doing.nvue:394", "\u4FDD\u5B58\u7167\u7247\u5230\u6570\u636E\u5E93\u5931\u8D25", dbErr);
-                formatAppLog("error", "at pages/session/doing.nvue:395", "\u5931\u8D25\u65F6\u7684 sessionId:", this.sessionId, "\u7C7B\u578B:", typeof this.sessionId);
+                formatAppLog("error", "at pages/session/doing.nvue:404", "\u4FDD\u5B58\u7167\u7247\u5230\u6570\u636E\u5E93\u5931\u8D25", dbErr);
+                formatAppLog("error", "at pages/session/doing.nvue:405", "\u5931\u8D25\u65F6\u7684 sessionId:", this.sessionId, "\u7C7B\u578B:", typeof this.sessionId);
               }
               uni.showToast({
                 title: `\u5DF2\u4FDD\u5B58\u7167\u7247 (${this.photos.length}\u5F20)`,
@@ -655,11 +838,11 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
               });
             }),
             fail: (err) => {
-              formatAppLog("error", "at pages/session/doing.nvue:407", "\u62CD\u7167\u5931\u8D25", err);
+              formatAppLog("error", "at pages/session/doing.nvue:417", "\u62CD\u7167\u5931\u8D25", err);
             }
           });
         } catch (e) {
-          formatAppLog("error", "at pages/session/doing.nvue:411", "\u62CD\u7167\u5F02\u5E38", e);
+          formatAppLog("error", "at pages/session/doing.nvue:421", "\u62CD\u7167\u5F02\u5E38", e);
         }
       },
       /**
@@ -688,7 +871,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         return __async(this, null, function* () {
           if (!this.lastReminderText)
             return;
-          yield playReminder("repeat", this.lastReminderText);
+          yield replayLastReminder(this.lastReminderText);
         });
       },
       switchCamera() {
@@ -698,14 +881,14 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           try {
             this.pusherContext.switchCamera({
               success: () => {
-                formatAppLog("log", "at pages/session/doing.nvue:453", "\u6444\u50CF\u5934\u5207\u6362\u6210\u529F");
+                formatAppLog("log", "at pages/session/doing.nvue:463", "\u6444\u50CF\u5934\u5207\u6362\u6210\u529F");
               },
               fail: (err) => {
-                formatAppLog("log", "at pages/session/doing.nvue:456", "\u6444\u50CF\u5934\u5207\u6362\u5931\u8D25", err);
+                formatAppLog("log", "at pages/session/doing.nvue:466", "\u6444\u50CF\u5934\u5207\u6362\u5931\u8D25", err);
               }
             });
           } catch (e) {
-            formatAppLog("log", "at pages/session/doing.nvue:460", "switchCamera \u65B9\u6CD5\u53EF\u80FD\u4E0D\u652F\u6301\uFF0C\u4F7F\u7528 device-position \u5C5E\u6027\u5207\u6362");
+            formatAppLog("log", "at pages/session/doing.nvue:470", "switchCamera \u65B9\u6CD5\u53EF\u80FD\u4E0D\u652F\u6301\uFF0C\u4F7F\u7528 device-position \u5C5E\u6027\u5207\u6362");
           }
         }
       },
@@ -736,15 +919,15 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         this.$nextTick(() => {
           try {
             this.pusherContext = uni.createLivePusherContext("livePusher", this);
-            formatAppLog("log", "at pages/session/doing.nvue:494", "live-pusher context created", this.pusherContext);
+            formatAppLog("log", "at pages/session/doing.nvue:504", "live-pusher context created", this.pusherContext);
           } catch (e) {
-            formatAppLog("error", "at pages/session/doing.nvue:496", "\u521B\u5EFA live-pusher context \u5931\u8D25", e);
+            formatAppLog("error", "at pages/session/doing.nvue:506", "\u521B\u5EFA live-pusher context \u5931\u8D25", e);
             setTimeout(() => {
               try {
                 this.pusherContext = uni.createLivePusherContext("livePusher", this);
-                formatAppLog("log", "at pages/session/doing.nvue:501", "live-pusher context \u91CD\u8BD5\u6210\u529F", this.pusherContext);
+                formatAppLog("log", "at pages/session/doing.nvue:511", "live-pusher context \u91CD\u8BD5\u6210\u529F", this.pusherContext);
               } catch (e2) {
-                formatAppLog("error", "at pages/session/doing.nvue:503", "live-pusher context \u91CD\u8BD5\u4E5F\u5931\u8D25", e2);
+                formatAppLog("error", "at pages/session/doing.nvue:513", "live-pusher context \u91CD\u8BD5\u4E5F\u5931\u8D25", e2);
               }
             }, 500);
           }
@@ -758,11 +941,11 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           this.initLivePusher();
         }
         if (!this.permissionGranted) {
-          formatAppLog("log", "at pages/session/doing.nvue:519", "\u6743\u9650\u672A\u6388\u4E88\uFF0C\u7B49\u5F85\u6743\u9650\u6388\u4E88\u540E\u518D\u542F\u52A8");
+          formatAppLog("log", "at pages/session/doing.nvue:529", "\u6743\u9650\u672A\u6388\u4E88\uFF0C\u7B49\u5F85\u6743\u9650\u6388\u4E88\u540E\u518D\u542F\u52A8");
           return;
         }
         if (!this.pusherContext) {
-          formatAppLog("log", "at pages/session/doing.nvue:524", "pusherContext \u4E0D\u5B58\u5728\uFF0C\u91CD\u65B0\u521D\u59CB\u5316");
+          formatAppLog("log", "at pages/session/doing.nvue:534", "pusherContext \u4E0D\u5B58\u5728\uFF0C\u91CD\u65B0\u521D\u59CB\u5316");
           this.initLivePusher();
           setTimeout(() => {
             this._doStartLivePusher();
@@ -776,7 +959,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
        */
       _doStartLivePusher() {
         if (!this.pusherContext) {
-          formatAppLog("error", "at pages/session/doing.nvue:541", "pusherContext \u4ECD\u7136\u4E0D\u5B58\u5728");
+          formatAppLog("error", "at pages/session/doing.nvue:551", "pusherContext \u4ECD\u7136\u4E0D\u5B58\u5728");
           return;
         }
         if (typeof this.pusherContext.startPreview === "function") {
@@ -784,10 +967,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             success: () => {
               this.pusherReady = true;
               this.cameraStatus = "\u6444\u50CF\u5934\u9884\u89C8\u5DF2\u542F\u52A8 \u2713";
-              formatAppLog("log", "at pages/session/doing.nvue:551", "live-pusher \u9884\u89C8\u542F\u52A8\u6210\u529F");
+              formatAppLog("log", "at pages/session/doing.nvue:561", "live-pusher \u9884\u89C8\u542F\u52A8\u6210\u529F");
             },
             fail: (err) => {
-              formatAppLog("error", "at pages/session/doing.nvue:554", "live-pusher startPreview \u5931\u8D25", err);
+              formatAppLog("error", "at pages/session/doing.nvue:564", "live-pusher startPreview \u5931\u8D25", err);
               this._tryStartMethod();
             }
           });
@@ -805,14 +988,14 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           success: () => {
             this.pusherReady = true;
             this.cameraStatus = "\u6444\u50CF\u5934\u9884\u89C8\u5DF2\u542F\u52A8 \u2713";
-            formatAppLog("log", "at pages/session/doing.nvue:575", "live-pusher start \u65B9\u6CD5\u6210\u529F");
+            formatAppLog("log", "at pages/session/doing.nvue:585", "live-pusher start \u65B9\u6CD5\u6210\u529F");
           },
           fail: (err) => {
             this.cameraStatus = "\u542F\u52A8\u5931\u8D25: " + JSON.stringify(err);
             this.cameraError = JSON.stringify(err);
-            formatAppLog("error", "at pages/session/doing.nvue:580", "live-pusher start \u65B9\u6CD5\u5931\u8D25", err);
+            formatAppLog("error", "at pages/session/doing.nvue:590", "live-pusher start \u65B9\u6CD5\u5931\u8D25", err);
             const errorMsg = err.errMsg || err.message || JSON.stringify(err);
-            formatAppLog("error", "at pages/session/doing.nvue:584", "\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F:", errorMsg);
+            formatAppLog("error", "at pages/session/doing.nvue:594", "\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F:", errorMsg);
             if (!this.showDebugInfo) {
               this.showDebugInfo = true;
             }
@@ -832,16 +1015,16 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           this.pusherContext.stopPreview({
             success: () => {
               this.pusherReady = false;
-              formatAppLog("log", "at pages/session/doing.nvue:608", "live-pusher \u9884\u89C8\u5DF2\u505C\u6B62");
+              formatAppLog("log", "at pages/session/doing.nvue:618", "live-pusher \u9884\u89C8\u5DF2\u505C\u6B62");
             },
             fail: () => {
               this.pusherContext.stop({
                 success: () => {
                   this.pusherReady = false;
-                  formatAppLog("log", "at pages/session/doing.nvue:615", "live-pusher \u5DF2\u505C\u6B62");
+                  formatAppLog("log", "at pages/session/doing.nvue:625", "live-pusher \u5DF2\u505C\u6B62");
                 },
                 fail: (err) => {
-                  formatAppLog("log", "at pages/session/doing.nvue:618", "live-pusher \u505C\u6B62\u5931\u8D25", err);
+                  formatAppLog("log", "at pages/session/doing.nvue:628", "live-pusher \u505C\u6B62\u5931\u8D25", err);
                 }
               });
             }
@@ -861,20 +1044,20 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
               if (granted) {
                 this.permissionStatus = "\u5DF2\u6388\u4E88";
                 this.permissionGranted = true;
-                formatAppLog("log", "at pages/session/doing.nvue:642", "\u6444\u50CF\u5934\u6743\u9650\u5DF2\u6388\u4E88", resultObj);
+                formatAppLog("log", "at pages/session/doing.nvue:652", "\u6444\u50CF\u5934\u6743\u9650\u5DF2\u6388\u4E88", resultObj);
                 setTimeout(() => {
                   this.startLivePusher();
                 }, 300);
               } else {
                 this.permissionStatus = "\u88AB\u62D2\u7EDD";
                 this.permissionGranted = false;
-                formatAppLog("log", "at pages/session/doing.nvue:651", "\u6444\u50CF\u5934\u6743\u9650\u88AB\u62D2\u7EDD", resultObj);
+                formatAppLog("log", "at pages/session/doing.nvue:661", "\u6444\u50CF\u5934\u6743\u9650\u88AB\u62D2\u7EDD", resultObj);
               }
             },
             (err) => {
               this.permissionStatus = "\u8BF7\u6C42\u5931\u8D25: " + JSON.stringify(err);
               this.permissionGranted = false;
-              formatAppLog("log", "at pages/session/doing.nvue:657", "\u6444\u50CF\u5934\u6743\u9650\u8BF7\u6C42\u5931\u8D25: " + JSON.stringify(err));
+              formatAppLog("log", "at pages/session/doing.nvue:667", "\u6444\u50CF\u5934\u6743\u9650\u8BF7\u6C42\u5931\u8D25: " + JSON.stringify(err));
               uni.showToast({
                 title: "\u672A\u6388\u4E88\u6444\u50CF\u5934\u6743\u9650\uFF0C\u65E0\u6CD5\u9884\u89C8\u753B\u9762",
                 icon: "none",
@@ -885,14 +1068,14 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         } catch (e) {
           this.permissionStatus = "\u5F02\u5E38: " + e.toString();
           this.permissionGranted = false;
-          formatAppLog("log", "at pages/session/doing.nvue:668", "\u6444\u50CF\u5934\u6743\u9650\u8BF7\u6C42\u5F02\u5E38: " + e);
+          formatAppLog("log", "at pages/session/doing.nvue:678", "\u6444\u50CF\u5934\u6743\u9650\u8BF7\u6C42\u5F02\u5E38: " + e);
         }
       },
       /**
        * live-pusher 状态变化事件
        */
       onPusherStateChange(e) {
-        formatAppLog("log", "at pages/session/doing.nvue:685", "live-pusher state change", e);
+        formatAppLog("log", "at pages/session/doing.nvue:695", "live-pusher state change", e);
         const code = e.detail.code;
         switch (code) {
           case 1001:
@@ -954,7 +1137,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             this.cameraError = "\u5F55\u5C4F\u5931\u8D25";
             break;
           default:
-            formatAppLog("log", "at pages/session/doing.nvue:749", "\u672A\u77E5\u72B6\u6001\u7801:", code);
+            formatAppLog("log", "at pages/session/doing.nvue:759", "\u672A\u77E5\u72B6\u6001\u7801:", code);
         }
       },
       /**
@@ -966,7 +1149,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
        * live-pusher 错误事件
        */
       onPusherError(e) {
-        formatAppLog("error", "at pages/session/doing.nvue:765", "live-pusher error", e);
+        formatAppLog("error", "at pages/session/doing.nvue:775", "live-pusher error", e);
         this.cameraError = "live-pusher \u9519\u8BEF: " + JSON.stringify(e.detail);
         this.cameraStatus = "\u6444\u50CF\u5934\u9519\u8BEF";
         if (!this.showDebugInfo) {
@@ -1003,7 +1186,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           }
         } catch (e) {
           this.cameraStatus = "\u68C0\u67E5\u5931\u8D25: " + e.toString();
-          formatAppLog("log", "at pages/session/doing.nvue:813", "\u68C0\u67E5\u6444\u50CF\u5934\u72B6\u6001\u5931\u8D25", e);
+          formatAppLog("log", "at pages/session/doing.nvue:823", "\u68C0\u67E5\u6444\u50CF\u5934\u72B6\u6001\u5931\u8D25", e);
         }
       }
     }

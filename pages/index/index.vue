@@ -32,6 +32,16 @@
         <text class="history-icon">≡</text>
         <text class="history-text">历史记录</text>
       </view>
+
+      <view
+        class="config-button"
+        hover-class="config-button-hover"
+        hover-stay-time="80"
+        @tap="goConfig"
+      >
+        <text class="config-icon">⚙</text>
+        <text class="config-text">个人配置</text>
+      </view>
     </view>
   </view>
 </template>
@@ -47,6 +57,11 @@ export default {
     goHistory() {
       uni.navigateTo({
         url: '/pages/history/list'
+      })
+    },
+    goConfig() {
+      uni.navigateTo({
+        url: '/pages/profile/config'
       })
     }
   }
@@ -173,6 +188,38 @@ export default {
 }
 
 .history-button-hover {
+  transform: scale(0.97);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
+  opacity: 0.96;
+}
+
+.config-button {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  transition: transform 0.12s ease-out, box-shadow 0.18s ease-out,
+    background-color 0.18s ease-out;
+  margin-top: 16rpx;
+}
+
+.config-icon {
+  font-size: 36rpx;
+  color: #2f80ff;
+  font-weight: 500;
+}
+
+.config-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #2c405a;
+}
+
+.config-button-hover {
   transform: scale(0.97);
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
   opacity: 0.96;

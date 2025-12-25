@@ -29,6 +29,12 @@
 			"style": {
 				"navigationBarTitleText": "历史记录"
 			}
+		},
+		{
+			"path": "pages/profile/config",
+			"style": {
+				"navigationBarTitleText": "个人配置"
+			}
 		}
 	],
 	"globalStyle": {

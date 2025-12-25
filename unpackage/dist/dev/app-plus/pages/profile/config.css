@@ -1,0 +1,150 @@
+
+.config-page {
+  padding: 0.75rem;
+  background-color: #f3f7ff;
+  min-height: 100vh;
+}
+.header {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c405a;
+  display: block;
+  margin-bottom: 0.375rem;
+}
+.subtitle {
+  font-size: 0.875rem;
+  color: #666666;
+}
+.config-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+}
+.card-header {
+  margin-bottom: 0.75rem;
+  border-bottom: 0.0625rem solid #f0f3fa;
+  padding-bottom: 0.5rem;
+}
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c405a;
+  display: block;
+  margin-bottom: 0.1875rem;
+}
+.card-desc {
+  font-size: 0.75rem;
+  color: #888888;
+}
+.config-item {
+  margin-bottom: 0.75rem;
+}
+.item-label {
+  font-size: 0.875rem;
+  color: #333333;
+  margin-bottom: 0.375rem;
+  display: block;
+}
+.item-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 1.375rem;
+  border: 0.0625rem solid #e6e6e6;
+  background-color: #f8f9fa;
+}
+.item-input:focus {
+  border-color: #4ba3ff;
+}
+.placeholder {
+  color: #999999;
+}
+.input-group {
+  display: flex;
+  align-items: center;
+}
+.password-input {
+  flex: 1;
+  border-radius: 1.375rem 0 0 1.375rem;
+  border-right: none;
+}
+.toggle-btn {
+  width: 3.75rem;
+  height: 2.75rem;
+  line-height: 2.75rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #4ba3ff;
+  border-radius: 0 1.375rem 1.375rem 0;
+  background-color: #e6f1ff;
+  border: 0.0625rem solid #e6e6e6;
+  border-left: none;
+}
+.hint {
+  font-size: 0.6875rem;
+  color: #999999;
+  margin-top: 0.25rem;
+}
+.switch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.switch-label {
+  font-size: 0.875rem;
+  color: #333333;
+}
+.action-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.save-btn {
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #4ba3ff;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.save-btn[disabled] {
+  background-color: #b3d1ff;
+  color: #ffffff;
+}
+.test-btn {
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #ffffff;
+  color: #4ba3ff;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 0.0625rem solid #4ba3ff;
+}
+.test-btn[disabled] {
+  background-color: #f0f3fa;
+  color: #999999;
+  border-color: #e6e6e6;
+}
+.status-bar {
+  margin-top: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  background-color: #f0f9ff;
+}
+.status-success {
+  color: #2f9b59;
+}
+.status-error {
+  color: #dd524d;
+}
+.status-text {
+  font-size: 0.8125rem;
+}

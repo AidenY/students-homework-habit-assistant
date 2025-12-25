@@ -126,7 +126,7 @@
 <script>
 import { startMockLoop, stopMockLoop } from '@/common/detectionService.js'
 import { formatDuration } from '@/common/timeUtils.js'
-import { playReminder } from '@/common/voiceReminder.js'
+import { playReminder, replayLastReminder } from '@/common/voiceReminder.js'
 import { savePhoto } from '@/common/photoStorage.js'
 
 export default {
@@ -282,13 +282,23 @@ export default {
           const isBad =
             snapshot.postureState !== 'good' ||
             snapshot.focusState !== 'focus'
+
+          // 调试信息
+          console.log('检测状态:', {
+            posture: snapshot.postureState,
+            focus: snapshot.focusState,
+            isBad,
+            badStreak: this.badStreak
+          })
+
           if (isBad) {
             this.badStreak += 1
           } else {
             this.badStreak = 0
           }
 
-          if (this.badStreak >= 2) {
+          if (this.badStreak >= 1) {
+            console.log('触发提醒!', snapshot)
             this.triggerReminder(snapshot)
             this.badStreak = 0
           }
@@ -309,7 +319,7 @@ export default {
       // 每30秒拍一张
       this.photoTimer = setInterval(() => {
         this.capturePhoto()
-      }, 1000) // 1秒 = 1000毫秒
+      }, 30000) // 30秒 = 30000毫秒
     },
     
     /**
@@ -437,7 +447,7 @@ export default {
     },
     async replayLastReminder() {
       if (!this.lastReminderText) return
-      await playReminder('repeat', this.lastReminderText)
+      await replayLastReminder(this.lastReminderText)
     },
     switchCamera() {
       // 切换摄像头

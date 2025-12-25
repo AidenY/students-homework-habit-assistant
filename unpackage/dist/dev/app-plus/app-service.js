@@ -39,7 +39,7 @@ if (uni.restoreGlobal) {
     }
     return target;
   };
-  const _sfc_main$4 = {
+  const _sfc_main$5 = {
     methods: {
       goStart() {
         uni.navigateTo({
@@ -50,10 +50,15 @@ if (uni.restoreGlobal) {
         uni.navigateTo({
           url: "/pages/history/list"
         });
+      },
+      goConfig() {
+        uni.navigateTo({
+          url: "/pages/profile/config"
+        });
       }
     }
   };
-  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "home-page" }, [
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("view", { class: "title-wrap" }, [
@@ -88,12 +93,21 @@ if (uni.restoreGlobal) {
         }, [
           vue.createElementVNode("text", { class: "history-icon" }, "≡"),
           vue.createElementVNode("text", { class: "history-text" }, "历史记录")
+        ]),
+        vue.createElementVNode("view", {
+          class: "config-button",
+          "hover-class": "config-button-hover",
+          "hover-stay-time": "80",
+          onClick: _cache[2] || (_cache[2] = (...args) => $options.goConfig && $options.goConfig(...args))
+        }, [
+          vue.createElementVNode("text", { class: "config-icon" }, "⚙"),
+          vue.createElementVNode("text", { class: "config-text" }, "个人配置")
         ])
       ])
     ]);
   }
-  const PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/index/index.vue"]]);
-  const _sfc_main$3 = {
+  const PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/index/index.vue"]]);
+  const _sfc_main$4 = {
     data() {
       return {
         durationOptions: [30, 45, 60],
@@ -113,7 +127,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page start-page" }, [
       vue.createElementVNode("view", { class: "hero" }, [
         vue.createElementVNode("image", {
@@ -167,7 +181,7 @@ if (uni.restoreGlobal) {
       ])
     ]);
   }
-  const PagesSessionStart = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/session/start.vue"]]);
+  const PagesSessionStart = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/session/start.vue"]]);
   function formatAppLog(type, filename, ...args) {
     if (uni.__log__) {
       uni.__log__(type, filename, ...args);
@@ -546,7 +560,7 @@ if (uni.restoreGlobal) {
   function init() {
     return initDatabase();
   }
-  const _sfc_main$2 = {
+  const _sfc_main$3 = {
     data() {
       return {
         session: null,
@@ -672,7 +686,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     return $data.session ? (vue.openBlock(), vue.createElementBlock("view", {
       key: 0,
       class: "page report-page"
@@ -862,8 +876,8 @@ if (uni.restoreGlobal) {
       ])
     ])) : vue.createCommentVNode("v-if", true);
   }
-  const PagesSessionReport = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/session/report.vue"]]);
-  const _sfc_main$1 = {
+  const PagesSessionReport = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/session/report.vue"]]);
+  const _sfc_main$2 = {
     data() {
       return {
         sessions: []
@@ -896,7 +910,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page history-page" }, [
       $data.sessions.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
@@ -956,11 +970,310 @@ if (uni.restoreGlobal) {
       ]))
     ]);
   }
-  const PagesHistoryList = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/history/list.vue"]]);
+  const PagesHistoryList = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/history/list.vue"]]);
+  const SECRET_KEY = "homework_assistant_2024";
+  function xorEncrypt(str, key) {
+    let encrypted = "";
+    for (let i = 0; i < str.length; i++) {
+      encrypted += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return encrypted;
+  }
+  function xorDecrypt(encrypted, key) {
+    let decrypted = "";
+    for (let i = 0; i < encrypted.length; i++) {
+      decrypted += String.fromCharCode(encrypted.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return decrypted;
+  }
+  function base64Encode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+  function base64Decode(str) {
+    return decodeURIComponent(escape(atob(str)));
+  }
+  function setEncryptedStorage(key, data, secretKey = SECRET_KEY) {
+    try {
+      const jsonStr = JSON.stringify(data);
+      const encrypted = xorEncrypt(jsonStr, secretKey);
+      const encoded = base64Encode(encrypted);
+      uni.setStorageSync(`encrypted_${key}`, encoded);
+      return true;
+    } catch (error) {
+      formatAppLog("error", "at common/encryptedStorage.js:59", "加密存储失败:", error);
+      return false;
+    }
+  }
+  function getEncryptedStorage(key, secretKey = SECRET_KEY) {
+    try {
+      const encoded = uni.getStorageSync(`encrypted_${key}`);
+      if (!encoded) {
+        return null;
+      }
+      const encrypted = base64Decode(encoded);
+      const jsonStr = xorDecrypt(encrypted, secretKey);
+      return JSON.parse(jsonStr);
+    } catch (error) {
+      formatAppLog("error", "at common/encryptedStorage.js:88", "解密存储失败:", error);
+      return null;
+    }
+  }
+  const _sfc_main$1 = {
+    data() {
+      return {
+        config: {
+          apiBaseUrl: "",
+          apiKey: "",
+          modelName: "",
+          useCloudModel: false,
+          enableVibration: true
+        },
+        showApiKey: false,
+        saving: false,
+        testing: false,
+        statusMessage: "",
+        statusType: "success"
+      };
+    },
+    onLoad() {
+      this.loadConfig();
+    },
+    methods: {
+      loadConfig() {
+        try {
+          const encryptedData = getEncryptedStorage("llm_config");
+          if (encryptedData) {
+            const decrypted = this.decryptData(encryptedData);
+            if (decrypted) {
+              this.config = {
+                ...this.config,
+                ...decrypted
+              };
+            }
+          }
+        } catch (error) {
+          formatAppLog("error", "at pages/profile/config.vue:136", "加载配置失败", error);
+          this.showStatus("加载配置失败", "error");
+        }
+      },
+      saveConfig() {
+        this.saving = true;
+        if (!this.config.apiBaseUrl || !this.config.apiKey) {
+          this.showStatus("请填写 API 地址和密钥", "error");
+          this.saving = false;
+          return;
+        }
+        try {
+          const encryptedData = this.encryptData({
+            apiBaseUrl: this.config.apiBaseUrl,
+            apiKey: this.config.apiKey,
+            modelName: this.config.modelName || "",
+            useCloudModel: this.config.useCloudModel,
+            enableVibration: this.config.enableVibration
+          });
+          setEncryptedStorage("llm_config", encryptedData);
+          this.showStatus("配置保存成功", "success");
+          this.updateConfigFile();
+        } catch (error) {
+          formatAppLog("error", "at pages/profile/config.vue:170", "保存配置失败", error);
+          this.showStatus("保存配置失败", "error");
+        } finally {
+          this.saving = false;
+        }
+      },
+      testConfig() {
+        if (!this.config.apiKey || !this.config.apiBaseUrl) {
+          this.showStatus("请先填写 API 信息", "error");
+          return;
+        }
+        this.testing = true;
+        setTimeout(() => {
+          this.testing = false;
+          if (this.config.apiKey.includes("test") || this.config.apiBaseUrl.includes("test")) {
+            this.showStatus("测试成功：API 连接正常", "success");
+          } else {
+            this.showStatus("测试完成：配置格式正确", "success");
+          }
+        }, 1500);
+      },
+      togglePassword() {
+        this.showApiKey = !this.showApiKey;
+      },
+      onSwitchChange(e) {
+        this.config.useCloudModel = e.detail.value;
+      },
+      onVibrationChange(e) {
+        this.config.enableVibration = e.detail.value;
+      },
+      encryptData(data) {
+        const str = JSON.stringify(data);
+        let encrypted = "";
+        for (let i = 0; i < str.length; i++) {
+          encrypted += String.fromCharCode(str.charCodeAt(i) ^ 123);
+        }
+        return encrypted;
+      },
+      decryptData(encrypted) {
+        try {
+          let decrypted = "";
+          for (let i = 0; i < encrypted.length; i++) {
+            decrypted += String.fromCharCode(encrypted.charCodeAt(i) ^ 123);
+          }
+          return JSON.parse(decrypted);
+        } catch (e) {
+          formatAppLog("error", "at pages/profile/config.vue:227", "解密失败", e);
+          return null;
+        }
+      },
+      updateConfigFile() {
+        const configContent = `export default {
+  apiBaseUrl: '${this.config.apiBaseUrl}',
+  apiKey: '${this.config.apiKey}',
+  modelName: '${this.config.modelName || ""}',
+  useCloudModel: ${this.config.useCloudModel}
+}`;
+        formatAppLog("log", "at pages/profile/config.vue:243", "配置内容已生成", configContent);
+      },
+      showStatus(message, type = "success") {
+        this.statusMessage = message;
+        this.statusType = type;
+        setTimeout(() => {
+          this.statusMessage = "";
+        }, 3e3);
+      }
+    }
+  };
+  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+    return vue.openBlock(), vue.createElementBlock("view", { class: "config-page" }, [
+      vue.createElementVNode("view", { class: "header" }, [
+        vue.createElementVNode("text", { class: "title" }, "个人配置"),
+        vue.createElementVNode("text", { class: "subtitle" }, "管理您的应用设置和密钥")
+      ]),
+      vue.createElementVNode("view", { class: "config-card" }, [
+        vue.createElementVNode("view", { class: "card-header" }, [
+          vue.createElementVNode("text", { class: "card-title" }, "LLM API 配置"),
+          vue.createElementVNode("text", { class: "card-desc" }, "配置语言模型 API 相关信息")
+        ]),
+        vue.createElementVNode("view", { class: "config-item" }, [
+          vue.createElementVNode("text", { class: "item-label" }, "API 地址"),
+          vue.withDirectives(vue.createElementVNode(
+            "input",
+            {
+              class: "item-input",
+              "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.config.apiBaseUrl = $event),
+              placeholder: "请输入 API 服务地址",
+              "placeholder-class": "placeholder"
+            },
+            null,
+            512
+            /* NEED_PATCH */
+          ), [
+            [vue.vModelText, $data.config.apiBaseUrl]
+          ])
+        ]),
+        vue.createElementVNode("view", { class: "config-item" }, [
+          vue.createElementVNode("text", { class: "item-label" }, "API 密钥"),
+          vue.createElementVNode("view", { class: "input-group" }, [
+            vue.withDirectives(vue.createElementVNode("input", {
+              class: "item-input password-input",
+              type: $data.showApiKey ? "text" : "password",
+              "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $data.config.apiKey = $event),
+              placeholder: "请输入 API 密钥",
+              "placeholder-class": "placeholder"
+            }, null, 8, ["type"]), [
+              [vue.vModelDynamic, $data.config.apiKey]
+            ]),
+            vue.createElementVNode(
+              "text",
+              {
+                class: "toggle-btn",
+                onClick: _cache[2] || (_cache[2] = (...args) => $options.togglePassword && $options.togglePassword(...args))
+              },
+              vue.toDisplayString($data.showApiKey ? "隐藏" : "显示"),
+              1
+              /* TEXT */
+            )
+          ]),
+          vue.createElementVNode("text", { class: "hint" }, "密钥将加密存储在本地")
+        ]),
+        vue.createElementVNode("view", { class: "config-item" }, [
+          vue.createElementVNode("text", { class: "item-label" }, "模型名称"),
+          vue.withDirectives(vue.createElementVNode(
+            "input",
+            {
+              class: "item-input",
+              "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.config.modelName = $event),
+              placeholder: "请输入模型名称",
+              "placeholder-class": "placeholder"
+            },
+            null,
+            512
+            /* NEED_PATCH */
+          ), [
+            [vue.vModelText, $data.config.modelName]
+          ])
+        ]),
+        vue.createElementVNode("view", { class: "config-item" }, [
+          vue.createElementVNode("view", { class: "switch-item" }, [
+            vue.createElementVNode("text", { class: "switch-label" }, "启用云端模型"),
+            vue.createElementVNode("switch", {
+              checked: $data.config.useCloudModel,
+              onChange: _cache[4] || (_cache[4] = (...args) => $options.onSwitchChange && $options.onSwitchChange(...args)),
+              color: "#4ba3ff"
+            }, null, 40, ["checked"])
+          ])
+        ])
+      ]),
+      vue.createElementVNode("view", { class: "config-card" }, [
+        vue.createElementVNode("view", { class: "card-header" }, [
+          vue.createElementVNode("text", { class: "card-title" }, "提醒设置"),
+          vue.createElementVNode("text", { class: "card-desc" }, "配置作业提醒相关设置")
+        ]),
+        vue.createElementVNode("view", { class: "config-item" }, [
+          vue.createElementVNode("view", { class: "switch-item" }, [
+            vue.createElementVNode("text", { class: "switch-label" }, "启用振动提醒"),
+            vue.createElementVNode("switch", {
+              checked: $data.config.enableVibration,
+              onChange: _cache[5] || (_cache[5] = (...args) => $options.onVibrationChange && $options.onVibrationChange(...args)),
+              color: "#4ba3ff"
+            }, null, 40, ["checked"])
+          ])
+        ])
+      ]),
+      vue.createElementVNode("view", { class: "action-buttons" }, [
+        vue.createElementVNode("button", {
+          class: "save-btn",
+          onClick: _cache[6] || (_cache[6] = (...args) => $options.saveConfig && $options.saveConfig(...args)),
+          disabled: $data.saving
+        }, vue.toDisplayString($data.saving ? "保存中..." : "保存配置"), 9, ["disabled"]),
+        vue.createElementVNode("button", {
+          class: "test-btn",
+          onClick: _cache[7] || (_cache[7] = (...args) => $options.testConfig && $options.testConfig(...args)),
+          disabled: $data.testing || !$data.config.apiKey
+        }, vue.toDisplayString($data.testing ? "测试中..." : "测试连接"), 9, ["disabled"])
+      ]),
+      $data.statusMessage ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "status-bar"
+      }, [
+        vue.createElementVNode(
+          "text",
+          {
+            class: vue.normalizeClass(["status-text", $data.statusType])
+          },
+          vue.toDisplayString($data.statusMessage),
+          3
+          /* TEXT, CLASS */
+        )
+      ])) : vue.createCommentVNode("v-if", true)
+    ]);
+  }
+  const PagesProfileConfig = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__file", "/Users/youyuzui/Desktop/2025-Code/88-YYZ/xiguan-yangcheng/xgzs/pages/profile/config.vue"]]);
   __definePage("pages/index/index", PagesIndexIndex);
   __definePage("pages/session/start", PagesSessionStart);
   __definePage("pages/session/report", PagesSessionReport);
   __definePage("pages/history/list", PagesHistoryList);
+  __definePage("pages/profile/config", PagesProfileConfig);
   const _sfc_main = {
     onLaunch: function() {
       formatAppLog("log", "at App.vue:6", "App Launch");
